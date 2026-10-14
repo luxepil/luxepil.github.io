@@ -810,7 +810,7 @@ learn.forEach(p=>{const id=p.dataset.id,qs=MINI[id];const box=document.createEle
  const retry=document.createElement('button');retry.type='button';retry.className='primary';retry.textContent='Пройти мини-тест заново';retry.hidden=true;
  row.append(msg,btn,retry);mq.appendChild(row);box.appendChild(mq);p.appendChild(box);
  const reset=()=>{mq.querySelectorAll('fieldset').forEach(f=>{f.classList.remove('right','wrong');clearOpts(f);f.querySelector('.expl').hidden=true;f.querySelectorAll('input').forEach(i=>{i.checked=false;i.disabled=false})});msg.textContent='';msg.className='msg';btn.hidden=false;retry.hidden=true;tm.hidden=false};
- const start=(end)=>{reset();intro.hidden=true;mq.hidden=false;end=end||Date.now()+MINI_TIME*1000;setActive({kind:'mini',id,end});enterTest();runTimer(tm,end,()=>finish(true))};
+ const start=(end)=>{reset();mq.querySelectorAll('fieldset').forEach(f=>{const ex=f.querySelector('.expl');shuf([...f.querySelectorAll('.opt')]).forEach(l=>f.insertBefore(l,ex))});intro.hidden=true;mq.hidden=false;end=end||Date.now()+MINI_TIME*1000;setActive({kind:'mini',id,end});enterTest();runTimer(tm,end,()=>finish(true))};
  const finish=(timeout)=>{const ans=qs.map((_,i)=>{const c=box.querySelector('input[name=m_'+id+'_'+i+']:checked');return c?+c.value:null});
   if(!timeout&&ans.some(a=>a===null)){msg.className='msg no';msg.textContent='Ответьте на все вопросы. Время идёт.';return;}
   const fss=[...mq.querySelectorAll('fieldset')];let ok=0;
@@ -889,7 +889,7 @@ try{nameEl.value=localStorage.getItem('lx_name')||'';stEl.value=localStorage.get
 
 document.getElementById('finalStart').onclick=()=>{const sh=document.getElementById('startHint');if(!nameEl.value.trim()||!stEl.value){sh.textContent='Сначала укажите имя и студию';nameEl.focus();return;}
  sh.textContent='';startFinal();};
-function startFinal(){document.getElementById('finalIntro').hidden=true;document.getElementById('finalBody').hidden=false;nameEl.disabled=true;stEl.disabled=true;setActive({kind:'final'});enterTest();}
+function startFinal(){quiz.querySelectorAll('fieldset').forEach(f=>{const ex=f.querySelector('.expl');shuf([...f.querySelectorAll('.opt')]).forEach(l=>f.insertBefore(l,ex))});document.getElementById('finalIntro').hidden=true;document.getElementById('finalBody').hidden=false;nameEl.disabled=true;stEl.disabled=true;setActive({kind:'final'});enterTest();}
 document.getElementById('checkBtn').onclick=async()=>{
  const hint=document.getElementById('qHint');
  const name=nameEl.value.trim(),studio=stEl.value;
