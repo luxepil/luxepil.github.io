@@ -1,0 +1,890 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>Школа администратора Luxepil</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=Unbounded:wght@500;600&display=swap">
+<style>
+/* Layout: учебник с оглавлением слева (на телефоне — лента разделов сверху), один раздел на экране, тест — последний раздел */
+:root{
+  --bg:#f7f3f4; --surface:#ffffff; --ink:#2a1f24; --muted:#6f6067; --line:#e6dbdf;
+  --accent:#8a4f6b; --accent-soft:#f1e4ea; --ok:#2f7a55; --ok-soft:#e3f2ea; --bad:#b3413b; --bad-soft:#f8e4e2; --warn-soft:#fbf0dc; --warn:#8a5a12;
+  --display:"Unbounded","Golos Text",system-ui,sans-serif;
+  --body:"Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1b1518; --surface:#251d21; --ink:#f1e8ec; --muted:#b3a3aa; --line:#3a2e34;
+  --accent:#d39ab5; --accent-soft:#3a2630; --ok:#7dcfa3; --ok-soft:#1f3329; --bad:#ef8f88; --bad-soft:#3a2221; --warn-soft:#3a2f1c; --warn:#e8c07a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1b1518; --surface:#251d21; --ink:#f1e8ec; --muted:#b3a3aa; --line:#3a2e34;
+  --accent:#d39ab5; --accent-soft:#3a2630; --ok:#7dcfa3; --ok-soft:#1f3329; --bad:#ef8f88; --bad-soft:#3a2221; --warn-soft:#3a2f1c; --warn:#e8c07a; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15.5px;line-height:1.55}
+.wrap{max-width:1180px;margin:0 auto;padding-block:20px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between;padding-bottom:18px;border-bottom:1px solid var(--line);margin-bottom:22px}
+.brand{font-family:var(--display);font-weight:600;font-size:clamp(20px,3vw,28px);letter-spacing:.01em;margin:0;text-wrap:balance}
+.brand small{display:block;font-family:var(--body);font-weight:500;font-size:13px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+.progress{min-width:220px;flex:0 1 320px}
+.progress .lbl{font-size:13px;color:var(--muted);display:flex;justify-content:space-between;font-variant-numeric:tabular-nums}
+.bar{height:6px;background:var(--line);border-radius:4px;overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
+.layout{display:grid;grid-template-columns:250px minmax(0,1fr);gap:28px;align-items:start}
+nav.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);display:flex;flex-direction:column;gap:2px}
+nav.toc a{display:flex;gap:10px;align-items:baseline;padding:9px 10px;border-radius:8px;color:var(--ink);text-decoration:none;font-size:14.5px}
+nav.toc a .n{font-variant-numeric:tabular-nums;color:var(--muted);font-size:12.5px;min-width:18px}
+nav.toc a .st{margin-left:auto;font-size:12px;color:var(--ok)}
+nav.toc a:hover{background:var(--accent-soft)}
+nav.toc a[aria-current="true"]{background:var(--accent);color:var(--surface)}
+nav.toc a[aria-current="true"] .n,nav.toc a[aria-current="true"] .st{color:var(--surface)}
+main{min-width:0}
+section.page{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:28px clamp(18px,3vw,36px)}
+section.page h2{font-family:var(--display);font-weight:600;font-size:clamp(20px,2.4vw,25px);line-height:1.25;margin:0 0 6px;text-wrap:balance}
+.lead{color:var(--muted);margin:0 0 22px;max-width:65ch}
+h3{font-size:17px;margin:28px 0 10px;text-wrap:balance}
+h3:first-of-type{margin-top:8px}
+p,li{max-width:70ch}
+ul,ol{padding-left:22px;margin:8px 0}
+li{margin:4px 0}
+.say{border-left:3px solid var(--accent);background:var(--accent-soft);padding:8px 12px;border-radius:0 8px 8px 0;margin:8px 0;font-style:italic}
+.note{background:var(--warn-soft);color:var(--ink);border-radius:var(--r);padding:10px 14px;margin:12px 0;font-size:14.5px}
+.note b{color:var(--warn)}
+.tbl{overflow-x:auto;margin:10px 0;border:1px solid var(--line);border-radius:var(--r)}
+table{border-collapse:collapse;width:100%;font-size:14.5px;min-width:520px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;background:var(--bg)}
+tr:last-child td{border-bottom:0}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.time{display:inline-block;font-variant-numeric:tabular-nums;font-weight:600;color:var(--accent);min-width:58px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin:10px 0}
+.card{border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;min-width:0}
+.card h4{margin:0 0 6px;font-size:15.5px}
+.card p{margin:4px 0}
+.obj{border:1px solid var(--line);border-radius:var(--r);margin:10px 0;overflow:hidden}
+.obj summary{cursor:pointer;padding:12px 16px;font-weight:600;list-style:none;display:flex;gap:10px}
+.obj summary::before{content:"+";color:var(--accent);font-weight:700;width:14px}
+.obj[open] summary::before{content:"–"}
+.obj .body{padding:0 16px 14px 40px}
+.obj dl{margin:0;display:grid;grid-template-columns:150px minmax(0,1fr);gap:6px 14px}
+.obj dt{color:var(--muted);font-size:13px;text-transform:uppercase;letter-spacing:.04em;padding-top:2px}
+.obj dd{margin:0}
+.tag{display:inline-block;font-size:12px;padding:2px 8px;border-radius:20px;background:var(--accent-soft);color:var(--accent);font-weight:600;letter-spacing:.02em}
+.contacts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.contact{border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.contact .role{font-size:12.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.contact .name{font-weight:600;font-size:16px}
+.contact .ph{font-variant-numeric:tabular-nums;user-select:all}
+.contact .why{font-size:13.5px;color:var(--muted);margin-top:4px}
+.foot{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;margin-top:30px;padding-top:18px;border-top:1px solid var(--line)}
+button{font:inherit;cursor:pointer;border-radius:9px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:10px 16px}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--surface);font-weight:600}
+button:disabled{opacity:.5;cursor:default}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.done-mark{color:var(--ok);font-weight:600}
+/* test */
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:12px 0 18px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:13.5px;color:var(--muted)}
+input,select{font:inherit;padding:10px 12px;border-radius:9px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.q{border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;margin:12px 0}
+.q legend{font-weight:600;padding:0 4px}
+.q .qn{color:var(--accent);font-variant-numeric:tabular-nums;margin-right:6px}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:7px 8px;border-radius:8px;cursor:pointer}
+.opt:hover{background:var(--bg)}
+.opt input{margin-top:5px}
+.q.right{border-color:var(--ok);background:var(--ok-soft)}
+.q.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.expl{font-size:14px;margin-top:8px}
+.result{border-radius:14px;padding:20px;margin-top:18px;border:2px solid var(--line)}
+.result.pass{border-color:var(--ok);background:var(--ok-soft)}
+.result.fail{border-color:var(--bad);background:var(--bad-soft)}
+.result .score{font-family:var(--display);font-size:30px;font-variant-numeric:tabular-nums}
+.adminbox{margin-top:26px;border-top:1px dashed var(--line);padding-top:18px}
+.welcome{background:var(--accent-soft);border-radius:12px;padding:20px clamp(16px,2.5vw,26px);margin:0 0 28px;max-width:75ch}
+.welcome p{margin:8px 0}
+.welcome .hello{font-family:var(--display);font-weight:600;font-size:clamp(18px,2.2vw,22px);color:var(--accent);margin:0 0 10px;text-wrap:balance}
+.welcome-screen{display:flex;justify-content:center;padding-block:clamp(12px,4vh,48px)}
+.welcome-screen .welcome{max-width:720px;margin:0;padding:clamp(24px,4vw,44px);border:1px solid var(--line);font-size:16.5px}
+.welcome-screen .hello{font-size:clamp(22px,3vw,30px)}
+.welcome-go{margin-top:22px}
+.welcome-go button{font-size:16px;padding:12px 22px}
+button.about{padding:8px 14px;font-size:14px;align-self:center}
+nav.toc a.locked{color:var(--muted);cursor:not-allowed}
+nav.toc a.locked:hover{background:transparent}
+.mini{margin-top:34px;padding:20px clamp(14px,2.5vw,24px);border-radius:12px;background:var(--bg);border:1px solid var(--line)}
+.mini h3{margin:0 0 4px;font-family:var(--display);font-weight:500;font-size:17px}
+.mini .sub{color:var(--muted);font-size:14px;margin:0 0 6px}
+.mini .q{background:var(--surface)}
+.mini .msg{margin:10px 0 0;font-weight:600}
+.mini .msg.ok{color:var(--ok)}.mini .msg.no{color:var(--bad)}
+.mini.passed{border-color:var(--ok);background:var(--ok-soft)}
+.opt.correct{background:var(--ok-soft);outline:2px solid var(--ok);font-weight:600}
+.opt.picked-wrong{background:var(--bad-soft);text-decoration:line-through;text-decoration-color:var(--bad)}
+.expl b{color:var(--ok)}
+.lockpage{text-align:center;padding:40px 10px;color:var(--muted)}
+.lockpage b{display:block;font-family:var(--display);font-weight:500;color:var(--ink);font-size:18px;margin-bottom:6px}
+@media (max-width:820px){
+  .layout{grid-template-columns:minmax(0,1fr)}
+  nav.toc{position:static;flex-direction:row;overflow-x:auto;gap:6px;padding-bottom:6px}
+  nav.toc a{white-space:nowrap;border:1px solid var(--line);padding:7px 11px}
+  nav.toc a .st{margin-left:4px}
+  .obj dl{grid-template-columns:minmax(0,1fr)}
+  .obj .body{padding-left:16px}
+}
+
+/* смартфон */
+input,select{font-size:16px}
+.opt input{width:20px;height:20px;flex:none;accent-color:var(--accent)}
+@media (max-width:600px){
+  body{font-size:16px}
+  .wrap{padding-block:12px 96px}
+  header.top{gap:10px;padding-bottom:12px;margin-bottom:12px}
+  .brand{font-size:19px}
+  .brand small{font-size:11.5px}
+  .progress{flex:1 1 100%;min-width:0;order:3}
+  button.about{order:2;margin-left:auto}
+  nav.toc{margin:0 -16px;padding:0 16px 8px;scrollbar-width:none;scroll-snap-type:x proximity}
+  nav.toc::-webkit-scrollbar{display:none}
+  nav.toc a{font-size:13.5px;padding:8px 12px;scroll-snap-align:start}
+  section.page{border:0;border-radius:0;background:transparent;padding:6px 0 0}
+  section.page h2{font-size:21px}
+  h3{font-size:16.5px;margin-top:24px}
+  .lead{font-size:15px}
+  ul,ol{padding-left:20px}
+  .tbl{border:0;overflow:visible}
+  .tbl table{min-width:0}
+  .tbl thead{display:none}
+  .tbl table,.tbl tbody,.tbl tr,.tbl td{display:block;width:100%}
+  .tbl tr{border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;margin-bottom:8px;background:var(--surface)}
+  .tbl td{border:0;padding:3px 0;white-space:normal}
+  .tbl td::before{content:attr(data-label);display:block;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600}
+  .tbl td:first-child{font-weight:600}
+  .tbl td:first-child::before{display:none}
+  .contacts,.grid2,.form{grid-template-columns:minmax(0,1fr)}
+  .card,.contact{background:var(--surface)}
+  .q{padding:12px 12px;margin:10px 0}
+  .q legend{font-size:15.5px;line-height:1.4}
+  .opt{padding:11px 8px;min-height:44px;align-items:center;border-radius:10px}
+  .opt input{margin-top:0}
+  .mini{margin:28px -16px 0;border-radius:0;border-left:0;border-right:0;padding:18px 16px}
+  .mini .foot{flex-direction:column;align-items:stretch}
+  .mini .foot button{width:100%;padding:13px}
+  .foot{gap:8px}
+  #pager{position:fixed;left:0;right:0;bottom:0;z-index:5;margin:0;background:var(--surface);border-top:1px solid var(--line);
+    padding-block:10px calc(10px + env(safe-area-inset-bottom,0px));padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px));flex-wrap:nowrap}
+  #pager button{flex:1 1 0;padding:12px 8px}
+  #pagerHint{display:none}
+  #checkBtn{width:100%;padding:14px}
+  .foot:has(#checkBtn){flex-direction:column;align-items:stretch}
+  .result{padding:16px}
+  .result .score{font-size:26px}
+  .result a,.result button{flex:1 1 100%;text-align:center;padding:13px}
+  .welcome-screen{padding-block:4px}
+  .welcome-screen .welcome{padding:22px 18px;font-size:16px}
+  .welcome-go button{width:100%;padding:14px}
+  .say{font-size:15px}
+}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <h1 class="brand"><small>Luxepil · студии эпиляции и маникюра · Казань</small>Школа администратора</h1>
+  <button type="button" id="aboutBtn" class="about">О курсе</button>
+  <div class="progress" aria-live="polite"><div class="lbl"><span>Пройдено этапов</span><span id="progLbl">0 из 8</span></div><div class="bar"><i id="progBar"></i></div></div>
+</header>
+
+<div id="welcomeScreen" class="welcome-screen" hidden>
+<div class="welcome">
+<p class="hello">Добро пожаловать в команду Luxepil!</p>
+<p>Мы рады, что вы с нами. Этот мини-курс собрал всё, что нужно администратору для уверенной работы: как устроена наша сеть, как проходит смена, как встречать Клиента, вести запись, отвечать на возражения и что делать в непростых ситуациях. Курс пригодится и сейчас, на старте, и потом — возвращайтесь к нему, когда нужно что-то уточнить.</p>
+<p><b>Как проходит обучение.</b> Курс состоит из 8 этапов. В конце каждого — мини-тест из 10 вопросов: ответьте верно на 8, и откроется следующий этап. После всех этапов откроется итоговый тест из 20 вопросов. Его результат вы отправите управляющей Наталии Владимировне — по нему решается, прошли ли вы обучение.</p>
+<p>Если ошибётесь, не страшно: система покажет правильный ответ, а тест можно пройти снова. Желаем успехов!</p>
+<div class="welcome-go"><button type="button" class="primary" id="startBtn">Начать обучение →</button></div>
+</div>
+</div>
+
+<div class="layout" id="layout">
+<nav class="toc" id="toc" aria-label="Разделы"></nav>
+<main id="main">
+
+<!-- 1 -->
+<section class="page" data-id="set" data-title="О сети и контакты">
+<h2>О сети и к кому обращаться</h2>
+<p class="lead">В сети шесть студий. Вас могут поставить на замену в любую из них, а Клиенты часто спрашивают про другие адреса, поэтому эту страницу нужно знать целиком.</p>
+<h3>Студии</h3>
+<div class="tbl"><table>
+<thead><tr><th>Студия</th><th>Как объяснить, где мы</th><th>WhatsApp студии</th></tr></thead>
+<tbody>
+<tr><td>Тукая 55</td><td>Вблизи перекрёстка улиц Татарстан и Габдуллы Тукая. В 2ГИС угловой дом значится как Зайни Султана 19</td><td class="num">+7 966 250-50-20</td></tr>
+<tr><td>Хади Такташа 2</td><td>У Театра кукол, Вахитовский район</td><td class="num">+7 987 290-00-67</td></tr>
+<tr><td>Бондаренко 17</td><td>Ново-Савиновский район</td><td class="num">+7 950 666-11-00</td></tr>
+<tr><td>Чуйкова 66</td><td>Ново-Савиновский район</td><td class="num">+7 950 666-16-26</td></tr>
+<tr><td>Козина 3А</td><td>Ново-Савиновский район, ЖК «Современник»</td><td class="num">+7 962 559-79-29</td></tr>
+<tr><td>Краснококшайская 84Б к2</td><td>Кировский район, ЖК «Евразия»</td><td class="num">+7 917 345-03-13</td></tr>
+</tbody></table></div>
+<h3>Где какие услуги</h3>
+<ul>
+<li>Лазерная эпиляция есть во всех студиях, лазер везде диодный.</li>
+<li>Электроэпиляция есть <b>только на Чуйкова</b>.</li>
+<li>Мужской зал есть <b>только на Тукая</b>.</li>
+<li>Детский маникюр есть во всех студиях.</li>
+</ul>
+<h3>К кому обращаться</h3>
+<ul>
+<li><b>Рабочие вопросы</b> — к старшему администратору, который сегодня на смене. Кто на смене, видно по утренним отчётам о приходе в ЧС. Если не видно, спросите в общем чате.</li>
+<li><b>Скидки, возвраты, жалобы, ранний уход со смены</b> — только к управляющей.</li>
+</ul>
+<div class="contacts">
+<div class="contact"><div class="role">Управляющая</div><div class="name">Наталия Владимировна</div><div class="ph">+7 965 606-08-67</div><div class="why">Скидки, возвраты, жалобы, ранний уход, конфликты</div></div>
+<div class="contact"><div class="role">Старший администратор</div><div class="name">Ольга</div><div class="ph">+7 950 312-29-72</div><div class="why">Звоните тому, кто сегодня на смене</div></div>
+<div class="contact"><div class="role">Старший администратор</div><div class="name">Ангелина</div><div class="ph">+7 927 037-91-82</div><div class="why">Звоните тому, кто сегодня на смене</div></div>
+<div class="contact"><div class="role">Старший администратор</div><div class="name">Ирада</div><div class="ph">+7 996 903-78-78</div><div class="why">Звоните тому, кто сегодня на смене</div></div>
+<div class="contact"><div class="role">Ремонт</div><div class="name">Сергей</div><div class="ph">+7 999 163-53-59</div><div class="why">Течёт унитаз или душ, перегорела лампочка, что-то сломалось</div></div>
+<div class="contact"><div class="role">Интернет</div><div class="name">Ильнур</div><div class="ph">+7 951 066-26-25</div><div class="why">Не работает интернет</div></div>
+</div>
+<h3>Чаты и отчёты</h3>
+<div class="tbl"><table>
+<thead><tr><th>Что</th><th>Куда</th></tr></thead>
+<tbody>
+<tr><td>Фото о приходе утром</td><td>ЧС («Чисто студии»)</td></tr>
+<tr><td>Отчёт о работе за день</td><td>ЧС</td></tr>
+<tr><td>Финансовый отчёт</td><td>Лично Руслану Юрьевичу и управляющей</td></tr>
+<tr><td>Фото уборки вечером</td><td>Группа «ЛЮКСЕПИЛ» (общая беседа администраторов)</td></tr>
+<tr><td>Приход мастеров</td><td>Управляющей, до 11:30</td></tr>
+</tbody></table></div>
+</section>
+
+<!-- 2 -->
+<section class="page" data-id="rules" data-title="Правила и оплата" hidden>
+<h2>Правила работы и оплата</h2>
+<p class="lead">Внешний вид, график, деньги и то, чего делать нельзя.</p>
+<h3>Внешний вид</h3>
+<ul>
+<li>Волосы чистые, собраны в пучок или хвост либо уложены.</li>
+<li>Лёгкий макияж.</li>
+<li>Чистая отглаженная форма: чёрные брюки или юбка, светлый верх, жилет, классическая обувь. Именной бейдж.</li>
+<li>Никаких резких запахов: духи, пот, табак, лук, чеснок.</li>
+</ul>
+<h3>График</h3>
+<ul>
+<li>График 2/2, с 8:30 до 21:00.</li>
+<li>Если на 19:00 и позже нет записей, смену можно закрыть в 20:00, но <b>только по согласованию с управляющей</b>.</li>
+<li>Отпуск, отгулы — согласовать минимум за месяц, заявление на имя директора.</li>
+<li>Больничный — принести справку из медучреждения.</li>
+<li>Увольнение — предупредить минимум за 2 недели, заявление на имя директора.</li>
+<li>Нужна замена в свою смену — ищете сами. Не получилось — сообщите управляющей.</li>
+</ul>
+<h3>Обучение и оплата</h3>
+<div class="tbl"><table>
+<thead><tr><th>Этап</th><th>Оплата</th></tr></thead>
+<tbody>
+<tr><td>Обучение со старшим администратором: 2 дня по 3–4 часа (день 1 — сервис и записи, день 2 — YCLIENTS)</td><td>Не оплачивается</td></tr>
+<tr><td>Стажировка: 2 самостоятельные смены. По её итогам решают, остаётесь ли вы</td><td class="num">1 500 ₽ за смену</td></tr>
+<tr><td>Работа после стажировки</td><td>2 000 ₽ за выход + 4% от оборота смены, при выполнении плана 5%</td></tr>
+<tr><td>Если выручка за смену меньше 20 000 ₽</td><td>Проценты не начисляются, только 2 000 ₽ за выход</td></tr>
+<tr><td>Продажа Zelinski&amp;Rozen</td><td>10% от суммы продаж</td></tr>
+<tr><td>Клиентский день</td><td>Как обычно: 4% от общего оборота</td></tr>
+</tbody></table></div>
+<p>Выплаты дважды в месяц, 5 и 20 числа, на банковскую карту.</p>
+<h3>Общие положения</h3>
+<ul>
+<li>Каждое 1 число месяца в 7:40 — собрание, явка обязательна. Если не можете прийти, предупредите управляющую заранее или принесите справку.</li>
+<li>Конфликтная ситуация — обращаемся к управляющей или старшему администратору.</li>
+<li>Личное оставляем за дверью студии.</li>
+<li><b>Корпоративное правило: «Клиент» — с заглавной буквы.</b> В любом письменном тексте — переписка, отчёты, заметки в YCLIENTS, документы — слово «Клиент» во всех формах пишем с заглавной буквы. Так мы показываем уважение к каждому гостю студии.</li>
+</ul>
+<h3>Запрещается</h3>
+<ol>
+<li>Опаздывать на работу.</li>
+<li>Приходить в нетрезвом виде.</li>
+<li>Давать Клиенту свои контакты или контакты мастера.</li>
+<li>Грубить Клиенту.</li>
+<li>Много рассказывать о себе, задавать бестактные вопросы.</li>
+<li>При гостях говорить по личному телефону или обсуждать с мастерами личные темы.</li>
+<li>Обсуждать других Клиентов, сплетничать.</li>
+<li>Пить чай или кофе, есть, читать при гостях.</li>
+<li>Уходить из студии в рабочее время без веской причины и без предупреждения старшего администратора или управляющей.</li>
+<li>Получать процедуры в рабочее время, если в зале есть Клиенты.</li>
+<li>Оставлять Клиента одного в рабочем помещении.</li>
+<li>Курить менее чем за 15 минут до прихода Клиента.</li>
+<li>Отказывать Клиенту по личным причинам («не нравится», «не хочу с ним работать»). Перенос возможен только по правилам студии, например при опоздании.</li>
+<li>Обещать скидку или подарок за отзыв, давать Клиенту готовый текст отзыва, просить поставить 5 звёзд.</li>
+</ol>
+<h3>Снижение премии</h3>
+<p>Снижается только процентная часть оплаты. Ставка за выход не снижается.</p>
+<div class="tbl"><table>
+<thead><tr><th>Нарушение</th><th>Последствие</th></tr></thead>
+<tbody>
+<tr><td>Невыход без уважительной причины</td><td>Премия −2 500 ₽</td></tr>
+<tr><td>Опоздание больше 15 минут без предупреждения</td><td>1-й раз — предупреждение, далее премия −500 ₽</td></tr>
+<tr><td>Неубранная студия</td><td>1-й раз — предупреждение, 2-й и 3-й — премия −200 ₽, далее −500 ₽</td></tr>
+<tr><td>Нет скриншотов сделанной рассылки</td><td>Премия −200 ₽</td></tr>
+<tr><td>Не отправлена вовремя заявка на расходники</td><td>Премия −500 ₽</td></tr>
+<tr><td>Неявка на собрание 1 числа без уважительной причины</td><td>Объяснительная и премия −500 ₽</td></tr>
+<tr><td>Нарушение дресс-кода</td><td>Не допускается к работе, пока не исправит</td></tr>
+<tr><td>Передача Клиенту своих контактов или контактов мастера</td><td>Грубое нарушение, увольнение</td></tr>
+</tbody></table></div>
+</section>
+
+<!-- 3 -->
+<section class="page" data-id="day" data-title="Рабочий день" hidden>
+<h2>Рабочий день: утро, день, вечер</h2>
+<p class="lead">Чек-лист смены. Время — ориентир, к которому пункт должен быть сделан.</p>
+<h3>Утро</h3>
+<ol>
+<li><span class="time">8:30</span>Прийти готовой: форма, бейдж, лёгкий макияж, волосы собраны.</li>
+<li>Отправить фото о приходе в ЧС.</li>
+<li>Включить компьютер и YCLIENTS. Проверить онлайн-записи за ночь и записи на день, предупредить мастеров об изменениях.</li>
+<li>Включить свет, воскоплавы, кофемашину. Проверить воду, чай, кофе, молоко.</li>
+<li>Проверить расходники: туалетная бумага, бумажные полотенца, жидкое мыло, бахилы.</li>
+<li>Проверить рабочие места мастеров. Беспорядок — сфотографировать и отправить управляющей.</li>
+<li><span class="time">до 9:00</span>Подготовить истории со свободными окнами в WhatsApp, MAX и Telegram.</li>
+<li><span class="time">9:00</span>Опубликовать: студия открыта, ждём гостей, свободные окна на сегодня.</li>
+<li><span class="time">до 11:30</span>Отчёт управляющей о приходе мастеров.</li>
+</ol>
+<h3>В течение дня</h3>
+<ol>
+<li>Контроль мастеров: форма, бейдж, рабочее место.</li>
+<li>Поддерживать чистоту в студии.</li>
+<li><b>7–10 историй в день</b> в статусы WhatsApp, MAX и Telegram: мастера в работе, процесс, результат.</li>
+<li>Снимать посты, рилсы и видеоотзывы и отправлять их SMM-специалисту. Instagram, ВКонтакте и TikTok ведёт SMM, не администратор.</li>
+<li><b>Горящие окна.</b> Если у мастера свободно — обзвон или рассылка Клиентам, которые были 3–4 недели назад: сегодня можно прийти со скидкой 300 ₽.</li>
+<li>Выставить свободные окна на завтра в мессенджерах.</li>
+<li>Проверить, ушли ли СМС-напоминания на завтра. Если был сбой — подтвердить записи вручную по телефону или в WhatsApp.</li>
+<li>Сообщение после визита с просьбой об отзыве — каждому Клиенту за сегодня (шаблон ниже).</li>
+<li>Расходники: дозаказ по понедельникам и четвергам, основной заказ с 5 по 10 и с 20 по 25 число.</li>
+<li>Задачи от старшего администратора и управляющей.</li>
+</ol>
+<div class="note"><b>Съёмка.</b> Снимаем руки, процесс и результат. Лицо Клиента — только с его согласия. Спрашиваем заранее: «Можно снять процесс для наших историй? Лицо в кадр не попадёт». Если Клиент против — не снимаем его вовсе.</div>
+<h3>Расходники: два разных процесса</h3>
+<div class="grid2">
+<div class="card"><h4>Основной заказ</h4><p>С 5 по 10 и с 20 по 25 число. Список всего, что нужно на полмесяца.</p></div>
+<div class="card"><h4>Дозаказ</h4><p>Понедельник и четверг, если чего-то не хватает. Понедельник — закрыть то, что кончилось за выходные. Четверг — чтобы студия не осталась без расходников на выходные.</p></div>
+</div>
+<h3>Сообщение после визита</h3>
+<p>Отправляем в тот же день, через 2–3 часа после ухода Клиента. Вечерним Клиентам — до конца смены. Ссылка ведёт туда, куда в этом месяце собираем отзывы. Сейчас это Яндекс Карты во всех студиях. Ссылки лежат в закреплённом сообщении в чате администраторов.</p>
+<div class="say">[Имя], спасибо, что были сегодня в Luxepil на [улица]! Как вам результат? Будем благодарны, если напишете пару слов о визите — какую услугу делали и у какого мастера: [ссылка]. Если что-то было не так — просто ответьте на это сообщение, мы обязательно разберёмся.</div>
+<p>Если Клиент ответил жалобой — действуйте по алгоритму из раздела 7 и в тот же день сообщите управляющей. Отвечают на отзывы на картах старшие администраторы и управляющая, не вы.</p>
+<h3>Вечер</h3>
+<ol>
+<li>Принять рабочие места мастеров, собрать бейджи.</li>
+<li>Закрыть кассу, сверить итоги.</li>
+<li>Финансовый отчёт — Руслану Юрьевичу и управляющей. Отчёт о работе за день — в ЧС: рассылки, сколько записей, отмен и перезаписей, сколько историй, сколько сообщений после визита.</li>
+<li>Уборка: помыть кофемашину, вынести мусор, протереть пыль, зеркала, полы. Фото уборки — в группу «ЛЮКСЕПИЛ».</li>
+<li><span class="time">21:00</span><b>Выключить воскоплавы</b>, кофемашину, технику, свет. Закрыть студию.</li>
+</ol>
+</section>
+
+<!-- 4 -->
+<section class="page" data-id="service" data-title="Клиент в студии" hidden>
+<h2>Обслуживание Клиента в студии</h2>
+<p class="lead">От двери до проводов.</p>
+<h3>Встреча</h3>
+<ol>
+<li>Встретить Клиента, предложить помочь с верхней одеждой.</li>
+<li>Знакомого Клиента — по имени. Нового — спросить, как обращаться, и найти в записи, к какому мастеру он пришёл.</li>
+<li>Обращаемся так, как Клиент представился: «Алина» — Алина, «Алина Рустемовна» — по имени-отчеству. Без сокращений и на «вы».</li>
+<li>Проводить в зону ожидания:<div class="say">Проходите пока сюда, сейчас мастер вас встретит.</div></li>
+</ol>
+<h3>Напитки</h3>
+<ul>
+<li><b>Маникюр и педикюр</b> — предлагаем сразу, называя варианты: чай чёрный или зелёный, с сахаром или без; кофе с молоком или без; вода с лимоном или без.</li>
+<li><b>Эпиляция</b> — только после процедуры, во время неё пить неудобно. Можно сделать напиток с собой.</li>
+<li>Клиент допил — подойти ещё раз, предложить повторить или другое. В остальное время процедуры не беспокоим.</li>
+</ul>
+<h3>Расчёт и проводы</h3>
+<ol>
+<li>Спросить, как всё прошло, всё ли понравилось.</li>
+<li>Предложить предзапись на следующий месяц:<div class="say">Давайте сразу запишемся на вашу процедуру на следующий месяц?</div></li>
+<li>Предложить напиток с собой.</li>
+<li>Рассчитать. Проверить кэшбэк и действующие акции и подсказать Клиенту самый выгодный вариант. <b>На один визит — одна выгода</b> (подробно в разделе 8).</li>
+<li>Попросить об отзыве — без всякой связи с подарками:<div class="say">Если будет минутка — оставьте, пожалуйста, отзыв на Яндекс Картах. Нам очень помогает, когда пишут, какую услугу делали и у какого мастера.</div></li>
+<li>Помочь одеться, проводить.</li>
+<li><b>Только новым Клиентам</b> — сертификаты для друзей на первое посещение, номинал 300 ₽.</li>
+<li>Пожелать хорошего дня или вечера.</li>
+</ol>
+<div class="note"><b>Комплимент.</b> Масло или пробник можно подарить просто так. Нельзя связывать подарок с отзывом: ни «оставьте отзыв — получите масло», ни подарок только тем, кто написал. За это Яндекс и 2ГИС снимают отзывы с карточки.</div>
+</section>
+
+<!-- 5 -->
+<section class="page" data-id="phone" data-title="Звонки и переписка" hidden>
+<h2>Звонки и переписка</h2>
+<p class="lead">Админ ведёт переписку только в WhatsApp, MAX и Telegram. Цены всегда берём из YCLIENTS.</p>
+<h3>Общие требования</h3>
+<ul>
+<li>Берём трубку не позже 3-го гудка, «с улыбкой в голосе».</li>
+<li>Никаких слов-паразитов (э-э, короче, типа, ну, вот) и жаргона («бронирование», «заявка», «идите на шарплайт»). Без уменьшительных слов.</li>
+<li>Не отказываем — предлагаем альтернативу. Не «нет, на завтра мест нет», а «на завтра всё занято, могу предложить четверг в 12:00 или в 16:00». Не «не знаю», а «сейчас уточню и вернусь к вам через 5 минут».</li>
+<li>Если что-то пообещали Клиенту — выполняем. Делайте пометки.</li>
+<li>Корпоративное правило: в переписке слово «Клиент» всегда пишем с заглавной буквы.</li>
+<li>В переписке отвечаем как можно быстрее, здороваемся по имени, можно добавить позитивный эмодзи. Последнее сообщение — за нами.</li>
+</ul>
+<h3>Скрипт входящего звонка</h3>
+<div class="tbl"><table>
+<thead><tr><th style="width:170px">Шаг</th><th>Что говорим</th></tr></thead>
+<tbody>
+<tr><td>1. Приветствие</td><td><i>«Добрый день! Студия эпиляции и маникюра Luxepil на [улица], администратор [имя]. Как я могу к вам обращаться?»</i> Постоянного Клиента приветствуем по имени — все контакты сохраняем на рабочем телефоне.</td></tr>
+<tr><td>2. Вы у нас были?</td><td><i>«Вы уже были у нас или планируете первое посещение?»</i> Новому: <i>«Очень приятно! Что вас интересует в первую очередь — красивые ногти или гладкая кожа? Подберу мастера на удобное время».</i></td></tr>
+<tr><td>3. Потребность</td><td><i>«Какую зону планируете для эпиляции? Какой маникюр предпочитаете — классический, аппаратный, с покрытием гель-лаком? Нужно ли снятие? Есть пожелания по времени или мастеру?»</i></td></tr>
+<tr><td>4. Предложение и цена</td><td>Цену называем из YCLIENTS, сразу после неё — что входит и предложение подобрать время. Пример: <i>«Рекомендую немецкий маникюр LNC: мастер проводит диагностику ногтевой пластины и подбирает уход. Он помогает восстановить ногти, заметный результат обычно — за курс процедур».</i></td></tr>
+<tr><td>5. Сомнение</td><td><i>«Понимаю, вы хотите выбрать лучшее. Для новых Клиентов при записи на маникюр — скидка 20% на эпиляцию любой зоны».</i></td></tr>
+<tr><td>6. Допродажа</td><td>К маникюру — педикюр одновременно, если свободен второй мастер. К шугарингу или воску — знакомство с лазером: одна зона за 1 000 ₽. К педикюру — маникюр, а при огрубевших пятках — карбамидный педикюр.</td></tr>
+<tr><td>7. Запись</td><td>Выбор из двух реальных окон из YCLIENTS: <i>«Вам удобнее в среду в 12:00 или в четверг в 15:30?»</i></td></tr>
+<tr><td>8. Подтверждение</td><td>Проговорить дату, время, услугу, мастера и адрес: <i>«[Имя], ждём вас 1 мая в 11:00 на маникюр с покрытием к мастеру Диане по адресу Тукая, 55. Накануне придёт СМС-напоминание. Приходите, пожалуйста, за 10 минут. Знаете, как до нас добраться?»</i> Если нет — отправить видеоинструкцию. Затем: <i>«Благодарю за звонок, до встречи!»</i></td></tr>
+</tbody></table></div>
+<h3>Другие ситуации</h3>
+<div class="grid2">
+<div class="card"><h4>Подтверждение записи</h4><p><i>«[Имя], вы записаны к нам на маникюр завтра в 11:00, подтверждаете? Благодарю, ждём вас по адресу Тукая, 55».</i></p></div>
+<div class="card"><h4>Перенос по нашей инициативе</h4><p><i>«[Имя], вы записаны на 1 мая в 10:00. Будет ли возможность прийти к 11:00? Благодарю! Ждём вас 1 мая в 11:00 на шугаринг зоны бикини к мастеру Алине».</i></p></div>
+<div class="card"><h4>Клиент отменяет</h4><p>Всегда предлагаем перезаписаться на другую дату.</p></div>
+<div class="card"><h4>Клиент опаздывает</h4><p><i>«[Имя], добрый день! Вы записаны к нам на педикюр в 15:00, успеваете? Через сколько сможете подъехать?»</i> Дальше — по правилу опозданий ниже.</p></div>
+</div>
+<h3>Правило опозданий</h3>
+<div class="tbl"><table>
+<thead><tr><th>Опоздание</th><th>Что делаем</th></tr></thead>
+<tbody>
+<tr><td>До 15 минут</td><td>Принимаем.</td></tr>
+<tr><td>Больше 15 минут, после Клиента записи нет</td><td>Принимаем, процедура в полном объёме.</td></tr>
+<tr><td>Больше 15 минут, следом идёт запись</td><td>Предлагаем на выбор: более короткую процедуру (без покрытия или однотонное), другого свободного мастера или запись на другой день.</td></tr>
+</tbody></table></div>
+<div class="say">Чтобы мастер сделал всё качественно и не задержал следующего гостя, могу предложить…</div>
+<p>Своё недовольство Клиенту не показываем и «жить не учим». Лучше сохранить желание Клиента вернуться, чем оказаться правым.</p>
+<h3>Мы так не говорим</h3>
+<div class="tbl"><table>
+<thead><tr><th>Не говорим</th><th>Говорим</th></tr></thead>
+<tbody>
+<tr><td>Минуточку, секундочку</td><td>Одну минуту, пожалуйста</td></tr>
+<tr><td>Можно ваш номер телефона?</td><td>Сообщите, пожалуйста, ваш номер телефона</td></tr>
+<tr><td>Ой, извините!</td><td>Прошу прощения</td></tr>
+<tr><td>Нужно вбить информацию</td><td>Ввести информацию</td></tr>
+<tr><td>Я сейчас войду в программу</td><td>Оставайтесь на линии</td></tr>
+<tr><td>Вам денег хватит?</td><td>У вас достаточно средств?</td></tr>
+<tr><td>Я не могу вам всё перечислить</td><td>Что именно вас интересует?</td></tr>
+<tr><td>Я с вами не разговаривала</td><td>Возможно, вы общались с другим администратором</td></tr>
+<tr><td>Что вы хотели?</td><td>По какому вопросу вы обращаетесь?</td></tr>
+<tr><td>Вы оставляли заявку / бронирование</td><td>Вы записывались на услугу на нашем сайте</td></tr>
+<tr><td>У меня сегодня работает Диана</td><td>Сегодня могу пригласить вас к Диане, в какое время вам удобно?</td></tr>
+</tbody></table></div>
+</section>
+
+<!-- 6 -->
+<section class="page" data-id="obj" data-title="Возражения" hidden>
+<h2>Работа с возражениями</h2>
+<p class="lead">Схема одна: присоединиться к Клиенту, уточнить, объяснить, предложить следующий шаг. Нажмите на возражение, чтобы открыть ответ. Вину на Клиента или другого гостя не перекладываем.</p>
+<div id="objList"></div>
+</section>
+
+<!-- 7 -->
+<section class="page" data-id="crisis" data-title="Жалобы и ЧП" hidden>
+<h2>Недовольный Клиент и нештатные ситуации</h2>
+<p class="lead">Ваша задача — выслушать, признать и решить, а не переспорить.</p>
+<h3>Алгоритм работы с недовольным Клиентом</h3>
+<ol>
+<li><b>Выслушать.</b> Дать договорить, не перебивать, не оправдываться. Задать уточняющие вопросы.</li>
+<li><b>Посочувствовать.</b> <i>«Понимаю, это действительно неприятно».</i></li>
+<li><b>Признать.</b> Если ошибка наша — прямо: <i>«Это наша ошибка, прошу прощения».</i> Если нет — без спора: <i>«Давайте разберёмся».</i></li>
+<li><b>Предложить решение.</b> Масло, крем или пробник вы дарите сами. Скидку, бесплатную коррекцию, возврат — только через управляющую: <i>«Я сейчас уточню у управляющей, как лучше решить вашу ситуацию».</i></li>
+<li><b>Сообщить управляющей</b> в тот же день, даже если Клиент ушёл довольным: имя Клиента, мастер, услуга, в чём жалоба, что предложили.</li>
+<li><b>Вернуться к Клиенту</b> через 1–2 дня: <i>«Как вы? Всё ли в порядке после визита?»</i> Если решили на месте — пишете вы. Если подключалась управляющая — пишет она.</li>
+</ol>
+<h3>Чего не делать</h3>
+<ul>
+<li>Не отвечать грубостью на грубость. Вы — лицо студии.</li>
+<li>Не переубеждать сразу: пока человек не выговорился, он не слышит аргументов.</li>
+<li>Не изображать невозмутимость — Клиенту покажется, что вам всё равно.</li>
+<li>Не обсуждать, кто виноват, и ничего не обещать от имени управляющей.</li>
+</ul>
+<h3>Нештатные ситуации</h3>
+<div class="grid2">
+<div class="card"><h4>Клиенту плохо, ожог, аллергия</h4>
+<p>Мастер останавливает процедуру. Принесите воду, помогите сесть или лечь, откройте окно. Ожог — охлаждать прохладной водой 10–15 минут, лёд напрямую не прикладывать. Аптечка — на ресепшене или в комнате персонала.</p>
+<p><b>Потеря сознания, затруднённое дыхание, отёк лица или горла, сильный ожог — сразу звоните 103 или 112</b>, не дожидаясь управляющей. Затем сообщите ей и запишите: время, мастер, процедура, что сделали.</p></div>
+<div class="card"><h4>Нет интернета</h4><p>Раздайте интернет с рабочего телефона, чтобы работали YCLIENTS и мессенджеры. Сообщите Ильнуру: +7 951 066-26-25.</p></div>
+<div class="card"><h4>Не работает терминал</h4><p>Примите оплату по QR-коду или наличными.</p></div>
+<div class="card"><h4>Нет света</h4><p>Сообщите управляющей, обзвоните Клиентов на ближайшие часы и предложите перенос.</p></div>
+<div class="card"><h4>Что-то сломалось</h4><p>Течёт унитаз или гигиенический душ, перегорела лампочка — звоните Сергею: +7 999 163-53-59. Если поломка мешает работе (нет воды, не работает кабинет) — сначала управляющей, чтобы перенести записи.</p></div>
+<div class="card"><h4>Мастер не вышел</h4><p>Сообщите управляющей. Обзвоните Клиентов этого мастера: другой мастер или другое время.</p></div>
+<div class="card"><h4>Двойная запись</h4><p>Извинитесь, предложите другого свободного мастера или ближайшее время. Если Клиент ждал — подарите масло.</p></div>
+<div class="card"><h4>Клиент без записи</h4><p>Принимаем, если есть свободный мастер. Если нет — предлагаем ближайшее свободное время.</p></div>
+</div>
+<h3>Дети</h3>
+<ul>
+<li>Первый визит ребёнка — и на маникюр, и на эпиляцию — <b>только вместе с родителем</b>.</li>
+<li>Дальше ребёнок может ходить сам, только если родитель подписал согласие. Ставите пометку в карточке Клиента в YCLIENTS, бланк храните в студии.</li>
+<li>Детский маникюр — с 10 до 16 лет. С 16 лет — обычный маникюр, в том числе с покрытием.</li>
+</ul>
+</section>
+
+<!-- 8 -->
+<section class="page" data-id="offers" data-title="Акции и подготовка" hidden>
+<h2>Акции, лояльность и подготовка к процедурам</h2>
+<p class="lead">Что действует сейчас и что обязательно сказать Клиенту при записи на эпиляцию.</p>
+<h3>Что действует</h3>
+<div class="tbl"><table>
+<thead><tr><th>Предложение</th><th>Условия</th></tr></thead>
+<tbody>
+<tr><td>Знакомство с лазером</td><td>Первая процедура: одна зона за 1 000 ₽</td></tr>
+<tr><td>Эпиляция к маникюру</td><td>Новым Клиентам при записи на маникюр — скидка 20% на эпиляцию любой зоны</td></tr>
+<tr><td>Горящие окна</td><td>Скидка 300 ₽ на визит сегодня</td></tr>
+<tr><td>Сертификат для друзей</td><td>300 ₽ на первое посещение. Выдаём только новым Клиентам</td></tr>
+<tr><td>Кэшбэк</td><td>1% при оплате картой, 5% при оплате наличными</td></tr>
+<tr><td>Клиентский день</td><td>Раз в месяц, в конце месяца. Можно открыть депозит и купить курс лазерной эпиляции со скидкой 20%. Дату управляющая объявляет на собрании или в чате администраторов</td></tr>
+<tr><td>Гарантия на покрытие</td><td>7 дней</td></tr>
+<tr><td>Комплексы</td><td>Комплексы на эпиляцию, маникюр + педикюр</td></tr>
+</tbody></table></div>
+<div class="note"><b>Одна выгода на визит.</b> Скидки, акции, спецпредложения и списание бонусов не суммируются. Клиент выбирает что-то одно, а вы подсказываете, что выгоднее.</div>
+<p>Постоянных абонементов и депозитов нет — только в клиентский день. С момента, как дата объявлена, предлагайте клиентский день всем, кто интересуется лазером или говорит «дорого».</p>
+<h3>Подготовка к процедурам — говорим при записи</h3>
+<div class="grid2">
+<div class="card"><h4>Лазерная эпиляция</h4><ul><li>Побрить зону за 1–2 дня до процедуры.</li><li>Без воска и шугаринга на этой зоне за 3–4 недели.</li><li>Не загорать за 2 недели.</li><li>Прийти без крема и дезодоранта на зоне.</li></ul></div>
+<div class="card"><h4>Шугаринг и воск</h4><ul><li>Длина волос 4–5 мм — примерно 2–3 недели без бритья.</li><li>За день — мягкий скраб.</li><li>В день процедуры без крема.</li></ul></div>
+<div class="card"><h4>Электроэпиляция (только Чуйкова)</h4><ul><li>Длина волос около 2–3 мм.</li></ul></div>
+<div class="card"><h4>Нужна консультация мастера</h4><p>Беременность, свежий загар, воспаления или повреждения кожи на зоне, препараты, повышающие чувствительность к свету. Сами не решаем:</p><div class="say">Уточню у мастера и перезвоню вам.</div></div>
+</div>
+</section>
+
+<!-- 9 -->
+<section class="page" data-id="test" data-title="Итоговый тест" hidden>
+<h2>Итоговый тест</h2>
+<div id="testLock" class="lockpage"><b>Итоговый тест пока закрыт</b>Он откроется, когда вы пройдёте мини-тесты всех 8 этапов.</div>
+<div id="testBody" hidden>
+<p class="lead">20 вопросов по всем разделам. Чтобы сдать, нужно 16 правильных ответов. По его итогам решается, прошли вы обучение или нет.</p>
+<div class="form">
+<label class="f" for="tName">Имя и фамилия<input id="tName" autocomplete="name" placeholder="Например, Алина Сафина"></label>
+<label class="f" for="tStudio">Студия<select id="tStudio"><option value="">Выберите студию</option><option>Тукая 55</option><option>Хади Такташа 2</option><option>Бондаренко 17</option><option>Чуйкова 66</option><option>Козина 3А</option><option>Краснококшайская 84Б к2</option></select></label>
+</div>
+<form id="quiz"></form>
+<div class="foot" style="margin-top:12px"><span id="qHint" class="lead" style="margin:0">Ответьте на все вопросы</span><button class="primary" id="checkBtn" type="button">Проверить</button></div>
+<div id="result" hidden></div>
+</div>
+<div id="adminBox" class="adminbox" hidden>
+<h3 style="margin-top:0">Результаты администраторов</h3>
+<p class="lead">Видны только вам и редакторам страницы.</p>
+<div id="adminList"></div>
+</div>
+</section>
+
+<div class="foot" id="pager">
+<button type="button" id="prevBtn">← Назад</button>
+<span id="pagerHint" class="lead" style="margin:0;font-size:14px"></span>
+<button type="button" id="nextBtn" class="primary">Далее →</button>
+</div>
+</main>
+</div>
+</div>
+
+<script>
+(function(){
+const markOpts=(fs,correct,chosen)=>{fs.querySelectorAll('.opt').forEach(l=>{const v=+l.querySelector('input').value;l.classList.toggle('correct',v===correct&&chosen!==correct);l.classList.toggle('picked-wrong',v===chosen&&chosen!==correct)})};
+const clearOpts=fs=>fs.querySelectorAll('.opt').forEach(l=>l.classList.remove('correct','picked-wrong'));
+const shuf=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const OBJ=[
+["Почему вы не напомнили о записи? Я забыла…",[
+["Присоединиться","«Понимаю, такое бывает с каждым».",""],
+["Если напоминание было (видно в YCLIENTS)","«Вчера мы отправляли вам СМС-напоминание, возможно, оно затерялось среди сообщений. Давайте подберу ближайшее удобное время, а накануне дополнительно напишу вам в WhatsApp»."],
+["Если напоминания не было","«Вы правы, мы должны были вас предупредить, это наша недоработка. Давайте подберу ближайшее удобное время. Кстати, у вашего мастера как раз освободилось окно вечером»."]]],
+["Меня приняли с опозданием на полчаса!",[
+["Ответ","«Вы правы, мы задержали вас, прошу прощения. Мастер сделает всё в полном объёме, а в качестве извинения — масло для кутикулы в подарок»."]]],
+["Я опоздала на 20 минут, почему вы не можете меня принять?",[
+["Присоединиться","«Понимаю вас, очень жаль, что так вышло»."],
+["Уточнить","«Вам важно именно к этому мастеру? Важно ли покрытие и дизайн?»"],
+["Предложить","«Чтобы мастер сделал всё качественно и не задержал следующего гостя, могу предложить однотонное покрытие или маникюр без покрытия, другого свободного мастера или удобное время завтра»."]]],
+["Мастер очень долго делала маникюр!",[
+["Ответ","«Понимаю, вы рассчитывали на другое время. Сложный дизайн действительно занимает больше времени, и в следующий раз я заранее скажу, сколько он займёт, чтобы вы могли спланировать день»."]]],
+["Ваш мастер мне нагрубил!",[
+["Ответ","«Мне очень жаль, так быть не должно. Расскажите, пожалуйста, что произошло. Я обязательно передам управляющей»."],
+["Дальше","Решение — только через управляющую: другой мастер, скидка, повторный визит."]]],
+["Мне жарко! / Мне холодно!",[
+["Уточнить","«Какая температура для вас комфортна?»"],
+["Жарко","«Если вы не против, откроем окна и проветрим»."],
+["Холодно","«Принести вам плед? Хотите, заварю горячий чай?»"]]],
+["У вас дорогой шугаринг, знакомая делает дешевле",[
+["Присоединиться","«Да, у нас дороже, чем у мастеров на дому»."],
+["Уточнить","«Что для вас важно при выборе мастера шугаринга?»"],
+["Объяснить","«Мы используем только одноразовые расходники, пасту проверенного поставщика и качественную косметику, мастера регулярно повышают квалификацию»."],
+["Предложить","«Можно прийти на консультацию к мастеру. И у нас есть выгодные комплексы»."]]],
+["Лазер у вас дорогой, в других салонах дешевле",[
+["Присоединиться","«Да, на отдельные зоны цена выше»."],
+["Уточнить","«На что вы смотрите при выборе студии лазерной эпиляции?»"],
+["Объяснить","«Мы работаем на диодном лазере, специалисты регулярно учатся, расходники одноразовые»."],
+["Предложить","«Для знакомства первая процедура: одна зона за 1 000 ₽. А раз в месяц в клиентский день курс можно взять со скидкой 20%»."]]],
+["Этот крем дорогой, не буду брать",[
+["Ответ","«Согласна, крем не дешёвый. Наши мастера используют его в работе — давайте нанесу, и вы сами почувствуете, какой становится кожа»."]]],
+["Вчера был маникюр, а гель-лак на двух ногтях уже откололся!",[
+["Присоединиться","«Да, понимаю, неприятная ситуация»."],
+["Уточнить","«Пришлите, пожалуйста, фото ногтей, покажу мастеру»."],
+["Признать","Если это ошибка мастера: «Это ошибка нашей студии, прошу прощения»."],
+["Решение","«На работу мастера действует гарантия 7 дней. Сможете подъехать в ближайшее время, чтобы мы всё исправили?» Масло для кутикулы — в подарок."]]],
+["Ждала другого эффекта от карбамидного педикюра, пятки грубые",[
+["Уточнить","«Вы впервые делаете карбамидный педикюр?»"],
+["Объяснить","«У него накопительный эффект: натоптыши и огрубения уходят за несколько процедур»."],
+["Предложить","Средство для домашнего ухода. Если есть вина мастера — решение через управляющую."]]],
+["После шугаринга появились вросшие волосы",[
+["Присоединиться","«Понимаю, такое бывает у многих»."],
+["Предложить","«Причины бывают разные — приходите на консультацию к мастеру, она посмотрит зону и даст рекомендации по уходу»."]]],
+["Мне не нужно масло для кутикулы",[
+["Ответ","«Понимаю, не все любят масла. Мастера советуют увлажнять кутикулу, чтобы маникюр держался дольше. Давайте нанесу — попробуете на себе»."]]],
+["Лазер — это больно?",[
+["Ответ","«Понимаю, многие переживают перед первым разом. У нас диодный лазер, ощущения обычно — тепло и лёгкое покалывание, мастер настраивает аппарат под вашу кожу. Можно начать со знакомства: одна зона за 1 000 ₽»."]]],
+["Шугаринг — это больно?",[
+["Ответ","«В первый раз чувствительнее всего. С каждой процедурой волосы становятся тоньше, и ощущения мягче. Можно начать с небольшой зоны»."]]],
+["Лазер вредный",[
+["Ответ","«Правильно, что спрашиваете. Что именно вас беспокоит? Лазер действует на волосяную луковицу, а перед процедурой мастер проверяет противопоказания. Могу записать вас сначала на консультацию к мастеру»."]]],
+["Сколько нужно процедур?",[
+["Ответ","«Зависит от зоны и типа волос. Обычно это курс из нескольких процедур, точное количество мастер скажет после первой. Раз в месяц в клиентский день курс можно взять со скидкой 20%»."]]],
+["А летом лазер можно?",[
+["Ответ","«Да, если на зоне нет свежего загара. После процедуры две недели не загорать и пользоваться кремом с SPF. Если планируете отпуск, давайте подберём даты»."]]],
+["Я подумаю",[
+["Ответ","«Конечно, это ваше решение. А что хотите обдумать — цену, время, безопасность?» Отвечаем по сути. «Могу пока забронировать удобное время. Если планы изменятся — просто напишите, перенесём»."]]]
+];
+const ol=document.getElementById('objList');
+OBJ.forEach(([q,rows])=>{const d=document.createElement('details');d.className='obj';
+ const s=document.createElement('summary');s.textContent='«'+q.replace(/^«|»$/g,'')+'»';d.appendChild(s);
+ const b=document.createElement('div');b.className='body';const dl=document.createElement('dl');
+ rows.forEach(r=>{const dt=document.createElement('dt');dt.textContent=r[0];const dd=document.createElement('dd');dd.textContent=r[1];dl.append(dt,dd);});
+ b.appendChild(dl);d.appendChild(b);ol.appendChild(d);});
+
+const QS=[
+["Во сколько администратор должен прийти и отправить фото о приходе?",["8:00","8:30","9:00","Когда придёт первый Клиент"],1,"Смена начинается в 8:30: прийти готовой и отправить фото в ЧС."],
+["Куда отправляется финансовый отчёт?",["В ЧС","В группу «ЛЮКСЕПИЛ»","Лично Руслану Юрьевичу и управляющей","Старшему администратору на смене"],2,"Финансовый отчёт — лично Руслану Юрьевичу и управляющей. Отчёт о работе — в ЧС, фото уборки — в группу «ЛЮКСЕПИЛ»."],
+["Сколько историй в день админ выкладывает в статусы мессенджеров?",["1–2","3–5","7–10","Сколько получится"],2,"Норма — 7–10 историй в статусы WhatsApp, MAX и Telegram."],
+["Где админ ведёт переписку с Клиентами?",["Instagram и ВКонтакте","WhatsApp, MAX и Telegram","Только по телефону","TikTok"],1,"Instagram, ВКонтакте и TikTok ведёт SMM. Админ — WhatsApp, MAX и Telegram."],
+["Клиенту на эпиляции когда предлагаем напиток?",["Сразу, как сел к мастеру","Во время процедуры","После процедуры или с собой","Не предлагаем"],2,"Во время эпиляции пить неудобно — предлагаем после или с собой."],
+["Кому выдаём сертификаты для друзей на 300 ₽?",["Всем Клиентам","Только новым Клиентам","Только постоянным","Тем, кто оставил отзыв"],1,"Сертификаты для друзей получают только новые Клиенты."],
+["Клиент пришёл в горящее окно (−300 ₽) и хочет ещё списать бонусы. Как правильно?",["Применить обе выгоды","Одна выгода на визит: подсказать, что выгоднее","Бонусы списать, скидку убрать без объяснений","Позвонить управляющей"],1,"Скидки, акции и бонусы не суммируются. Админ подсказывает самый выгодный вариант."],
+["Клиент опоздал на 25 минут, следом у мастера запись. Что делаем?",["Отказываем: «по регламенту не принимаем»","Принимаем, следующий Клиент подождёт","Предлагаем короткую процедуру, другого мастера или другой день","Принимаем со скидкой"],2,"Больше 15 минут и следом запись — короткая процедура (без покрытия или однотонное), другой мастер или другой день."],
+["Клиент опоздал на 25 минут, но после него записей нет. Что делаем?",["Принимаем, процедура в полном объёме","Только короткая процедура","Переносим на другой день","Берём доплату за ожидание"],0,"Если после Клиента записи нет, принимаем и делаем всё в полном объёме."],
+["Клиент жалуется на мастера и хочет скидку. Что может админ?",["Дать скидку до 20% сам","Дать скидку до 50% сам","Подарить масло или пробник; скидку — только через управляющую","Ничего, отправить к мастеру"],2,"Масло, крем или пробник админ дарит сам. Любая скидка, коррекция, возврат — только с согласия управляющей."],
+["Какой первый шаг при работе с недовольным Клиентом?",["Сразу извиниться","Выслушать, не перебивая","Объяснить, почему он не прав","Предложить скидку"],1,"Сначала выслушать, затем посочувствовать, признать, предложить решение, сообщить управляющей и вернуться к Клиенту."],
+["Можно ли сказать Клиенту: «Оставьте отзыв — подарим масло для кутикулы»?",["Да, это мотивирует","Да, если отзыв на 5 звёзд","Нет: за подарок за отзыв площадки снимают отзывы","Только на Яндексе"],2,"Комплимент дарим просто так, просьбу об отзыве делаем отдельно и без связи с подарком."],
+["Когда отправляем Клиенту сообщение с просьбой оставить отзыв?",["Через неделю","В тот же день, через 2–3 часа после визита","Только если Клиент сам попросил","Перед следующей записью"],1,"Через 2–3 часа после визита, вечерним Клиентам — до конца смены."],
+["Как приветствуем Клиента по телефону?",["«Алло, слушаю»","«Luxepil, здравствуйте»","«Добрый день! Студия эпиляции и маникюра Luxepil на [улица], администратор [имя]. Как я могу к вам обращаться?»","«Салон красоты, что вы хотели?»"],2,"Единое приветствие для всех студий."],
+["Где сейчас есть электроэпиляция?",["Во всех студиях","Только на Чуйкова","Только на Тукая","На Тукая и Чуйкова"],1,"Электроэпиляция — только Чуйкова. Мужской зал — только Тукая."],
+["Перегорела лампочка, течёт душ. К кому обращаться?",["К Ильнуру","К Сергею","В YCLIENTS","Ни к кому, ждать управляющую"],1,"Поломки — Сергей. Интернет — Ильнур."],
+["Клиенту стало плохо, отекает лицо и трудно дышать. Что делаем первым?",["Звоним управляющей","Звоним 103 или 112","Даём таблетку из аптечки","Ждём, пока пройдёт"],1,"При угрозе жизни сразу 103 или 112, не дожидаясь управляющей."],
+["С какого возраста делаем маникюр с покрытием?",["С 10 лет","С 14 лет","С 16 лет","С 18 лет"],2,"Детский маникюр — с 10 до 16 лет, с 16 — обычный, в том числе с покрытием."],
+["Когда ребёнок может прийти на процедуру без родителя?",["Всегда","С 14 лет","Со второго визита, если родитель подписал согласие","Никогда"],2,"Первый визит — только с родителем. Дальше — только при подписанном согласии и пометке в YCLIENTS."],
+["Что сказать Клиенту при записи на лазерную эпиляцию?",["Отрастить волосы 4–5 мм","Побрить зону за 1–2 дня и не загорать за 2 недели","Сделать шугаринг за неделю","Ничего не нужно"],1,"Перед лазером: побрить за 1–2 дня, без воска и шугаринга 3–4 недели, не загорать 2 недели. Длина 4–5 мм нужна для шугаринга."]
+];
+const quiz=document.getElementById('quiz');
+QS.forEach((q,i)=>{const fs=document.createElement('fieldset');fs.className='q';fs.id='q'+i;
+ const lg=document.createElement('legend');const n=document.createElement('span');n.className='qn';n.textContent=(i+1)+'.';lg.append(n,document.createTextNode(q[0]));fs.appendChild(lg);
+ shuf(q[1].map((_,k)=>k)).forEach(j=>{const o=q[1][j];const l=document.createElement('label');l.className='opt';const inp=document.createElement('input');inp.type='radio';inp.name='a'+i;inp.value=j;inp.id='a'+i+'_'+j;l.append(inp,document.createTextNode(o));fs.appendChild(l);});
+ const ex=document.createElement('div');ex.className='expl';ex.hidden=true;fs.appendChild(ex);quiz.appendChild(fs);});
+
+/* mini tests: 10 questions per stage */
+const MINI_PASS=8;
+const MINI={
+set:[["Где сейчас делают электроэпиляцию?",["Во всех студиях","Только на Чуйкова","Только на Тукая"],1],
+ ["В какой студии есть мужской зал?",["Тукая 55","Бондаренко 17","Во всех"],0],
+ ["Где делают детский маникюр?",["Только на Тукая","Только на Чуйкова","Во всех студиях"],2],
+ ["Какой лазер в студиях Luxepil?",["Александритовый","Диодный","В каждой студии свой"],1],
+ ["Клиент просит скидку за неудобства. Кто это решает?",["Администратор сам","Старший администратор на смене","Управляющая Наталия Владимировна"],2],
+ ["С рабочим вопросом к кому идём в первую очередь?",["К управляющей","К старшему администратору, который сегодня на смене","К Руслану Юрьевичу"],1],
+ ["Как узнать, кто из старших администраторов сегодня на смене?",["По утренним отчётам о приходе в ЧС или спросить в общем чате","Позвонить всем по очереди","Посмотреть в Instagram"],0],
+ ["Куда отправляется фото уборки вечером?",["В группу «ЛЮКСЕПИЛ»","Лично Руслану Юрьевичу","В ЧС"],0],
+ ["Куда отправляется отчёт о работе за день?",["В ЧС","В группу «ЛЮКСЕПИЛ»","Никуда"],0],
+ ["Как объяснить Клиенту, где студия на Хади Такташа?",["У Театра кукол, Вахитовский район","Ново-Савиновский район","Кировский район, ЖК «Евразия»"],0]],
+rules:[["Какой график у администратора?",["5/2 с 9:00 до 18:00","2/2 с 8:30 до 21:00","3/3 с 10:00 до 22:00"],1],
+ ["Когда можно закрыть смену в 20:00?",["Если нет записей на 19:00 и позже — сразу","Если нет записей на 19:00 и позже и управляющая согласовала","Никогда"],1],
+ ["Выручка за смену — 18 000 ₽. Сколько получит администратор?",["2 000 ₽ за выход","2 000 ₽ + 4%","2 000 ₽ + 5%"],0],
+ ["Какой процент от оборота при выполнении плана?",["3%","4%","5%"],2],
+ ["Как оплачивается стажировка?",["Не оплачивается","1 500 ₽ за смену","2 000 ₽ за смену"],1],
+ ["Как по корпоративному правилу пишем слово «Клиент» в переписке и отчётах?",["Со строчной буквы","С заглавной буквы во всех формах","Как удобно"],1],
+ ["За сколько согласовывать отпуск?",["За неделю","Минимум за месяц","Можно в тот же день"],1],
+ ["Когда собрание администраторов?",["Каждый понедельник в 9:00","1 числа каждого месяца в 7:40","Только по вызову"],1],
+ ["Что снижается при нарушении?",["Ставка за выход","Процентная часть (премия)","Всё"],1],
+ ["Администратор дал Клиенту телефон мастера. Последствие?",["Предупреждение","Премия −500 ₽","Грубое нарушение, увольнение"],2]],
+day:[["Что администратор делает первым в 8:30?",["Варит кофе","Приходит готовой к смене и отправляет фото о приходе в ЧС","Звонит Клиентам"],1],
+ ["Во сколько публикуем «Мы открыты» со свободными окнами?",["В 8:30","В 9:00","В 11:30"],1],
+ ["До скольки отправить управляющей отчёт о приходе мастеров?",["До 9:00","До 11:30","До 14:00"],1],
+ ["Сколько историй в день выкладываем в статусы мессенджеров?",["1–2","3–5","7–10"],2],
+ ["Кому предлагаем горящие окна со скидкой 300 ₽?",["Новым подписчикам","Клиентам, которые были 3–4 недели назад","Всем контактам в телефоне"],1],
+ ["Можно ли снять лицо Клиента для истории?",["Да, всегда","Только с его согласия","Нет, никогда"],1],
+ ["Кто публикует в Instagram, ВКонтакте и TikTok?",["Администратор","SMM-специалист, админ только снимает и отправляет","Мастера"],1],
+ ["Когда отправляем дозаказ расходников управляющей?",["По понедельникам и четвергам","Каждый день","В конце месяца"],0],
+ ["СМС-напоминания на завтра не ушли из-за сбоя. Что делаем?",["Ничего, Клиенты помнят","Подтверждаем записи вручную по телефону или в WhatsApp","Переносим записи"],1],
+ ["Что обязательно выключить перед закрытием?",["Воскоплавы, кофемашину, технику, свет","Только свет","Только компьютер"],0]],
+service:[["Что делаем первым, когда Клиент входит?",["Спрашиваем, к кому записан","Встречаем и предлагаем помочь с верхней одеждой","Сразу ведём к мастеру"],1],
+ ["Как обращаемся к Клиенту?",["Как он представился, на «вы»","Всегда по имени-отчеству","Можно на «ты», если молодой"],0],
+ ["Что говорим, проводя в зону ожидания?",["«Подождите тут»","«Проходите пока сюда, сейчас мастер вас встретит»","Ничего"],1],
+ ["Клиент пришёл на маникюр. Когда предлагаем напиток?",["Сразу, называя варианты","Только после процедуры","Не предлагаем"],0],
+ ["Клиент пришёл на эпиляцию. Когда предлагаем напиток?",["Сразу","После процедуры или с собой","Не предлагаем"],1],
+ ["Клиент допил напиток во время маникюра. Что делаем?",["Ничего","Подходим и предлагаем повторить или другой напиток","Забираем чашку молча"],1],
+ ["Что предлагаем при расчёте, кроме напитка с собой?",["Предзапись на следующий месяц","Скидку на следующий визит","Ничего"],0],
+ ["Кому выдаём сертификаты для друзей?",["Всем","Только новым Клиентам","Только постоянным"],1],
+ ["Как правильно с комплиментом (масло, пробник)?",["Дарим тем, кто оставил отзыв","Дарим просто так, не связывая с отзывом","Дарим за 5 звёзд"],1],
+ ["О чём просим при просьбе об отзыве?",["Поставить 5 звёзд","Написать, какую услугу делали и у какого мастера","Скопировать наш текст"],1]],
+phone:[["На каком гудке берём трубку?",["Не позже 3-го","Не позже 5-го","Когда освободимся"],0],
+ ["Как начинаем разговор?",["«Алло»","«Добрый день! Студия эпиляции и маникюра Luxepil на [улица], администратор [имя]. Как я могу к вам обращаться?»","«Luxepil, слушаю»"],1],
+ ["Откуда берём цену, которую называем Клиенту?",["Из скрипта","Из YCLIENTS","По памяти"],1],
+ ["Как предлагаем время записи?",["«Когда вам удобно?»","Выбор из двух реальных окон: «среда в 12:00 или четверг в 15:30?»","Называем все свободные окна"],1],
+ ["Что проговариваем при подтверждении записи?",["Только время","Дату, время, услугу, мастера и адрес","Только мастера"],1],
+ ["Клиент опоздал на 10 минут. Что делаем?",["Принимаем","Переносим","Предлагаем короткую процедуру"],0],
+ ["Опоздание больше 15 минут, следом у мастера запись. Что предлагаем?",["Отказать","Короткую процедуру, другого мастера или другой день","Принять, следующий подождёт"],1],
+ ["Клиент спросил то, чего вы не знаете. Что говорите?",["«Не знаю»","«Это не ко мне»","«Сейчас уточню и вернусь к вам через 5 минут»"],2],
+ ["Как правильно сказать вместо «Минуточку»?",["«Секундочку»","«Одну минуту, пожалуйста»","«Подождите»"],1],
+ ["Клиент отменяет запись. Что делаем?",["Просто удаляем запись","Предлагаем перезаписаться на другую дату","Спрашиваем причину и спорим"],1]],
+obj:[["«Меня приняли с опозданием на полчаса!» Как отвечаем?",["Объясняем, что задержался предыдущий Клиент","Признаём, извиняемся, дарим масло","Говорим, что так бывает"],1],
+ ["«Почему не напомнили о записи?», а СМС в YCLIENTS было отправлено. Что говорим?",["«Вы сами виноваты»","Мягко говорим про СМС и предлагаем ближайшее время","Признаём, что не отправляли"],1],
+ ["«Мастер мне нагрубила». Первые слова?",["«Такое впервые»","«Мне очень жаль, так быть не должно. Расскажите, что произошло»","«Не может быть»"],1],
+ ["«Шугаринг у вас дороже, чем у знакомой». Чем объясняем цену?",["Арендой","Одноразовыми расходниками, проверенной пастой, обучением мастеров","Ничем"],1],
+ ["«Лазер у вас дорогой». Что предлагаем?",["Скидку 30%","Знакомство: одна зона за 1 000 ₽ и курс в клиентский день","Ничего, цены фиксированные"],1],
+ ["Гель-лак откололся на следующий день. Что действует?",["Гарантия 7 дней на покрытие","Гарантия 14 дней","Только за доплату"],0],
+ ["«Лазер — это больно?» Что отвечаем?",["«Терпимо»","Тепло и лёгкое покалывание, мастер настроит аппарат, можно начать со знакомства","«Да, очень»"],1],
+ ["«Сколько нужно процедур лазера?»",["Ровно 3","Курс из нескольких, точное число мастер скажет после первой","Одна"],1],
+ ["Клиенту жарко. Что предлагаем?",["Потерпеть","Открыть окна и проветрить, если он не против","Включить обогреватель"],1],
+ ["Клиент говорит «Я подумаю». Что делаем?",["Прощаемся","Уточняем, что именно обдумать, и предлагаем забронировать время","Даём скидку"],1]],
+crisis:[["Какой первый шаг с недовольным Клиентом?",["Извиниться","Выслушать, не перебивая","Объяснить, что он не прав"],1],
+ ["Недовольный Клиент хочет скидку. Ваш шаг?",["Даю сам","«Я сейчас уточню у управляющей»","Отказываю"],1],
+ ["Что админ может подарить сам, без согласования?",["Скидку 20%","Масло, крем или пробник","Бесплатную процедуру"],1],
+ ["Клиент ушёл довольным после жалобы. Сообщать управляющей?",["Нет, вопрос решён","Да, в тот же день","Только если он напишет отзыв"],1],
+ ["Не работает интернет. Что делаете?",["Раздаю с рабочего телефона и пишу Ильнуру","Звоню Сергею","Закрываю студию"],0],
+ ["Не работает терминал. Как принять оплату?",["Никак","По QR-коду или наличными","Записать в долг"],1],
+ ["Двойная запись. Что делаем?",["Отправляем позднего Клиента домой","Извиняемся, предлагаем другого мастера или время, ждавшему — масло","Спорим, кто записался первым"],1],
+ ["Клиент получил ожог воском. Что делаем?",["Прикладываем лёд напрямую","Охлаждаем прохладной водой 10–15 минут и сообщаем управляющей","Мажем кремом и продолжаем"],1],
+ ["Ребёнок 12 лет пришёл впервые один на маникюр. Что делаем?",["Делаем детский маникюр","Не принимаем без родителя на первом визите","Делаем маникюр с покрытием"],1],
+ ["Клиент пришёл без записи, все мастера заняты. Что делаем?",["Отказываем","Предлагаем ближайшее свободное время","Просим подождать без срока"],1]],
+offers:[["Сколько стоит знакомство с лазером?",["Бесплатно","Одна зона за 1 000 ₽","Скидка 50%"],1],
+ ["Кому скидка 20% на эпиляцию при записи на маникюр?",["Всем","Новым Клиентам","Постоянным"],1],
+ ["Какой кэшбэк при оплате картой?",["1%","3%","5%"],0],
+ ["Какой кэшбэк при оплате наличными?",["1%","3%","5%"],2],
+ ["Что такое клиентский день?",["Скидка 20% на всё каждый день","Раз в месяц: депозит и курс лазера со скидкой 20%","Бесплатная процедура раз в месяц"],1],
+ ["Можно ли списать бонусы на комплекс маникюр + педикюр?",["Да","Нет, одна выгода на визит","Только половину"],1],
+ ["Что сказать Клиенту перед лазером?",["Побрить зону за 1–2 дня, не загорать 2 недели","Отрастить волосы 4–5 мм","Ничего"],0],
+ ["Какая длина волос нужна для шугаринга?",["1–2 мм","4–5 мм","Побрить за 1–2 дня"],1],
+ ["Клиентка беременна и хочет на лазер. Что говорит админ?",["Записывает","«Уточню у мастера и перезвоню вам»","Отказывает навсегда"],1],
+ ["Сколько стоит сертификат для друзей?",["300 ₽ на первое посещение","500 ₽","10% скидки"],0]]
+};
+const pages=[...document.querySelectorAll('section.page')];
+const learn=pages.filter(p=>p.dataset.id!=='test');
+const toc=document.getElementById('toc');
+let passed={};try{passed=JSON.parse(localStorage.getItem('lx_passed')||'{}')}catch(e){}
+const idx=id=>pages.findIndex(p=>p.dataset.id===id);
+const unlocked=i=>i===0||learn.slice(0,i).every(p=>passed[p.dataset.id]);
+function savePassed(){try{localStorage.setItem('lx_passed',JSON.stringify(passed))}catch(e){}saveStages();}
+
+learn.forEach(p=>{const id=p.dataset.id,qs=MINI[id];const box=document.createElement('div');box.className='mini';box.id='mini_'+id;
+ const h=document.createElement('h3');h.textContent='Мини-тест по этапу';const sub=document.createElement('p');sub.className='sub';sub.textContent='10 вопросов. Чтобы открыть следующий этап, нужно '+MINI_PASS+' правильных ответов.';
+ box.append(h,sub);
+ qs.forEach((q,i)=>{const fs=document.createElement('fieldset');fs.className='q';const lg=document.createElement('legend');const n=document.createElement('span');n.className='qn';n.textContent=(i+1)+'.';lg.append(n,document.createTextNode(q[0]));fs.appendChild(lg);
+  shuf(q[1].map((_,k)=>k)).forEach(j=>{const o=q[1][j];const l=document.createElement('label');l.className='opt';const inp=document.createElement('input');inp.type='radio';inp.name='m_'+id+'_'+i;inp.value=j;inp.id='m_'+id+'_'+i+'_'+j;l.append(inp,document.createTextNode(o));fs.appendChild(l)});const ex=document.createElement('div');ex.className='expl';ex.hidden=true;fs.appendChild(ex);box.appendChild(fs)});
+ const row=document.createElement('div');row.className='foot';row.style.marginTop='12px';row.style.borderTop='0';row.style.paddingTop='0';
+ const msg=document.createElement('p');msg.className='msg';const btn=document.createElement('button');btn.type='button';btn.className='primary';btn.textContent='Проверить';
+ row.append(msg,btn);box.appendChild(row);p.appendChild(box);
+ btn.onclick=()=>{const ans=qs.map((_,i)=>{const c=box.querySelector('input[name=m_'+id+'_'+i+']:checked');return c?+c.value:null});
+  if(ans.some(a=>a===null)){msg.className='msg no';msg.textContent='Ответьте на все вопросы.';return;}
+  const fss=[...box.querySelectorAll('fieldset')];let ok=0;
+  qs.forEach((q,i)=>{const r=ans[i]===q[2];if(r)ok++;const f=fss[i];f.classList.toggle('right',r);f.classList.toggle('wrong',!r);markOpts(f,q[2],ans[i]);const ex=f.querySelector('.expl');ex.hidden=r;ex.innerHTML='';if(!r){ex.append('Ошибка. ');const b=document.createElement('b');b.textContent='Правильный ответ: «'+q[1][q[2]]+'»';ex.append(b,'. Он выделен зелёным.')}});
+  if(ok>=MINI_PASS){passed[id]=true;savePassed();markMini(id,true);if(ok<qs.length){const m=box.querySelector('.msg');m.textContent+=' Ошибок: '+(qs.length-ok)+' — посмотрите правильные ответы выше, они выделены зелёным.'}render();}
+  else{msg.className='msg no';msg.textContent='Верно '+ok+' из '+qs.length+', нужно '+MINI_PASS+'. Под каждой ошибкой указан правильный ответ. Изучите их, выберите ответы заново и нажмите «Проверить».';}
+ };
+});
+function markMini(id,keep){const box=document.getElementById('mini_'+id);if(!box)return;box.classList.add('passed');
+ box.querySelectorAll('input').forEach(i=>i.disabled=true);
+ if(!keep)box.querySelectorAll('fieldset').forEach((f,i)=>{f.classList.remove('wrong');f.classList.add('right');const inp=f.querySelector('input[value="'+MINI[id][i][2]+'"]');if(inp)inp.checked=true});
+ const btn=box.querySelector('button');btn.hidden=true;const msg=box.querySelector('.msg');msg.className='msg ok';
+ msg.textContent=idx(id)<learn.length-1?'Этап пройден. Следующий открыт.':'Все этапы пройдены. Итоговый тест открыт.';}
+
+pages.forEach((p,i)=>{const a=document.createElement('a');a.href='#'+p.dataset.id;a.dataset.id=p.dataset.id;
+ const n=document.createElement('span');n.className='n';n.textContent=p.dataset.id==='test'?'★':(i+1);
+ const t=document.createElement('span');t.textContent=p.dataset.title;const st=document.createElement('span');st.className='st';
+ a.append(n,t,st);a.addEventListener('click',e=>{e.preventDefault();if(unlocked(i))show(p.dataset.id,true)});toc.appendChild(a);});
+let cur=0;
+function render(){
+ [...toc.children].forEach((a,i)=>{const u=unlocked(i);a.classList.toggle('locked',!u);a.setAttribute('aria-disabled',u?'false':'true');
+  a.setAttribute('aria-current',i===cur?'true':'false');a.querySelector('.st').textContent=passed[a.dataset.id]?'✓':(u?'':'🔒')});
+ const act=toc.children[cur];if(act&&toc.scrollWidth>toc.clientWidth){toc.scrollTo({left:act.offsetLeft-16,behavior:'smooth'})}
+ const c=learn.filter(p=>passed[p.dataset.id]).length;
+ document.getElementById('progLbl').textContent=c+' из '+learn.length;
+ document.getElementById('progBar').style.width=(c/learn.length*100)+'%';
+ const all=c===learn.length;document.getElementById('testLock').hidden=all;document.getElementById('testBody').hidden=!all;
+ const id=pages[cur].dataset.id,nb=document.getElementById('nextBtn'),hint=document.getElementById('pagerHint');
+ document.getElementById('prevBtn').disabled=cur===0;
+ const last=cur===pages.length-1;nb.hidden=last;
+ const can=!last&&unlocked(cur+1);nb.disabled=!can;
+ hint.textContent=(!last&&!can)?'Пройдите мини-тест, чтобы открыть следующий этап':'';
+}
+function show(id,scroll){let i=idx(id);if(i<0||!unlocked(i))i=Math.max(0,learn.findIndex(p=>!passed[p.dataset.id]));if(learn.every(p=>passed[p.dataset.id])&&idx(id)<0)i=0;
+ cur=i;pages.forEach((p,j)=>p.hidden=j!==i);
+ try{history.replaceState(null,'','#'+pages[i].dataset.id)}catch(e){}
+ render();if(scroll)window.scrollTo({top:0,behavior:'smooth'});}
+document.getElementById('prevBtn').onclick=()=>show(pages[Math.max(0,cur-1)].dataset.id,true);
+document.getElementById('nextBtn').onclick=()=>{if(unlocked(cur+1))show(pages[cur+1].dataset.id,true)};
+learn.forEach(p=>{if(passed[p.dataset.id])markMini(p.dataset.id)});
+show((location.hash||'').slice(1)||'set',false);
+
+document.querySelectorAll('.tbl table').forEach(t=>{const hs=[...t.querySelectorAll('thead th')].map(th=>th.textContent.trim());t.querySelectorAll('tbody tr').forEach(tr=>[...tr.children].forEach((td,i)=>{if(hs[i])td.setAttribute('data-label',hs[i])}))});
+const wsc=document.getElementById('welcomeScreen'),lay=document.getElementById('layout');
+function showWelcome(on){wsc.hidden=!on;lay.hidden=on;document.getElementById('aboutBtn').hidden=on;if(on)window.scrollTo({top:0})}
+document.getElementById('startBtn').onclick=()=>{try{localStorage.setItem('lx_welcome','1')}catch(e){}showWelcome(false);window.scrollTo({top:0,behavior:'smooth'})};
+document.getElementById('aboutBtn').onclick=()=>showWelcome(true);
+let seen=false;try{seen=localStorage.getItem('lx_welcome')==='1'}catch(e){}
+showWelcome(!seen&&!Object.keys(passed).length);
+
+
+/* storage for signed-in viewers */
+let db=null,user=null,myId=null;
+async function saveStages(){if(!db||!myId)return;try{const ref=db.doc('results/'+myId);const s=await ref.get();const d=(s&&s.exists&&s.data())||{};
+ const name=(nameEl.value||'').trim()||d.name||'',studio=stEl.value||d.studio||'';
+ await ref.set(Object.assign({},d,{name,studio,stages:Object.keys(passed).filter(k=>passed[k]),updated:new Date().toISOString()}));}catch(e){}}
+(async()=>{try{if(!window.claude||!claude.use)return;user=await claude.use('user');db=await claude.use('db');
+ if(user&&db){try{myId=await user.id()}catch(e){}
+  if(myId){try{const s=await db.doc('results/'+myId).get();if(s&&s.exists){const d=s.data()||{};(d.stages||[]).forEach(k=>{if(MINI[k]&&!passed[k]){passed[k]=true;markMini(k)}});
+   try{localStorage.setItem('lx_passed',JSON.stringify(passed))}catch(e){}
+   if(d.name&&!nameEl.value)nameEl.value=d.name;if(d.studio&&!stEl.value)stEl.value=d.studio;render();}}catch(e){}}
+  if(user.canEdit&&await user.canEdit())loadAdmin();}}catch(e){}})();
+
+const nameEl=document.getElementById('tName'),stEl=document.getElementById('tStudio');
+try{nameEl.value=localStorage.getItem('lx_name')||'';stEl.value=localStorage.getItem('lx_studio')||''}catch(e){}
+document.getElementById('checkBtn').onclick=async()=>{
+ const hint=document.getElementById('qHint');
+ const name=nameEl.value.trim(),studio=stEl.value;
+ if(!name||!studio){hint.textContent='Укажите имя и студию в начале теста';hint.style.color='var(--bad)';nameEl.focus();return;}
+ const ans=QS.map((_,i)=>{const c=quiz.querySelector('input[name=a'+i+']:checked');return c?+c.value:null});
+ const miss=ans.findIndex(a=>a===null);
+ if(miss>=0){hint.textContent='Не отвечен вопрос '+(miss+1);hint.style.color='var(--bad)';document.getElementById('q'+miss).scrollIntoView({behavior:'smooth',block:'center'});return;}
+ hint.textContent='';try{localStorage.setItem('lx_name',name);localStorage.setItem('lx_studio',studio)}catch(e){}
+ let score=0;const wrong=[];
+ QS.forEach((q,i)=>{const fs=document.getElementById('q'+i),ok=ans[i]===q[2];if(ok)score++;else wrong.push(i+1);
+  fs.classList.toggle('right',ok);fs.classList.toggle('wrong',!ok);markOpts(fs,q[2],ans[i]);const ex=fs.querySelector('.expl');ex.hidden=false;
+  ex.innerHTML='';if(ok){ex.append('Верно. '+q[3])}else{ex.append('Ошибка. ');const b=document.createElement('b');b.textContent='Правильный ответ: «'+q[1][q[2]]+'»';ex.append(b,'. '+q[3])}});
+ const pass=score>=16,now=new Date();
+ const r=document.getElementById('result');r.hidden=false;r.className='result '+(pass?'pass':'fail');
+ const stamp=now.toLocaleString('ru-RU',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+ r.innerHTML='';
+ const h=document.createElement('div');h.className='score';h.textContent=score+' из '+QS.length;
+ const p1=document.createElement('p');p1.innerHTML='<b>'+(pass?'Тест сдан.':'Тест не сдан.')+'</b> '+(pass?'Отличная работа!':'Нужно 16 правильных. Перечитайте разделы и пройдите тест ещё раз.');
+ const p2=document.createElement('p');p2.textContent=name+' · '+studio+' · '+stamp+(wrong.length?' · ошибки в вопросах: '+wrong.join(', '):'');
+ const WA='79656060867',WA_SHOW='+7 965 606-08-67';
+ const subj='Итоговый тест Luxepil: '+name+', '+studio+' — '+score+' из '+QS.length+(pass?' (сдан)':' (не сдан)');
+ const bodyTxt='Администратор: '+name+'\nСтудия: '+studio+'\nДата: '+stamp+'\nРезультат: '+score+' из '+QS.length+(pass?' — тест сдан':' — тест не сдан')+'\nОшибки в вопросах: '+(wrong.length?wrong.join(', '):'нет')+'\nЭтапы обучения: пройдены все 8';
+ const p3=document.createElement('p');p3.id='saveNote';p3.innerHTML='<b>Отправьте результат управляющей Наталии Владимировне</b> в WhatsApp: <span style="user-select:all;font-weight:600">'+WA_SHOW+'</span>. Нажмите «Отправить в WhatsApp» — откроется чат с готовым сообщением, останется нажать «Отправить». Если WhatsApp не открылся, нажмите «Скопировать результат» и отправьте текст на этот номер сами.';
+ const acts=document.createElement('div');acts.style.cssText='display:flex;flex-wrap:wrap;gap:10px;margin-top:10px';
+ const mail=document.createElement('a');mail.href='https://wa.me/'+WA+'?text='+encodeURIComponent(subj+'\n\n'+bodyTxt);mail.target='_blank';mail.rel='noopener';
+ mail.textContent='Отправить в WhatsApp';mail.style.cssText='display:inline-block;background:var(--accent);color:var(--surface);padding:10px 16px;border-radius:9px;text-decoration:none;font-weight:600';
+ const copy=document.createElement('button');copy.type='button';copy.textContent='Скопировать результат';
+ const pre=document.createElement('pre');pre.textContent=subj+'\n\n'+bodyTxt;pre.style.cssText='white-space:pre-wrap;font:inherit;font-size:14px;background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:10px 12px;margin:10px 0 0';pre.hidden=true;
+ copy.onclick=()=>{const t=subj+'\n\n'+bodyTxt;const done=()=>{copy.textContent='Скопировано'};
+  try{navigator.clipboard.writeText(t).then(done,()=>{pre.hidden=false;const rg=document.createRange();rg.selectNodeContents(pre);const sel=getSelection();sel.removeAllRanges();sel.addRange(rg);copy.textContent='Выделено — скопируйте вручную'})}catch(e){pre.hidden=false}};
+ const again=document.createElement('button');again.type='button';again.textContent='Пройти заново';
+ again.onclick=()=>{quiz.reset();quiz.querySelectorAll('.q').forEach(f=>{f.classList.remove('right','wrong');clearOpts(f);f.querySelector('.expl').hidden=true});r.hidden=true;quiz.scrollIntoView({behavior:'smooth'})};
+ acts.append(mail,copy,again);
+ r.append(h,p1,p2,p3,acts,pre);r.scrollIntoView({behavior:'smooth',block:'center'});
+ if(db&&myId){try{const ref=db.doc('results/'+myId);let prev=[];try{const s=await ref.get();if(s&&s.exists){const d=s.data();prev=(d&&d.attempts)||[]}}catch(e){}
+  const at={score,total:QS.length,pass,wrong,at:now.toISOString()};
+  await ref.set({name,studio,attempts:prev.concat([at]).slice(-20),last:at});
+  const sv=document.createElement('p');sv.textContent='Результат также сохранён на платформе.';r.insertBefore(sv,acts);}catch(e){}}
+};
+
+async function loadAdmin(){const box=document.getElementById('adminBox'),list=document.getElementById('adminList');box.hidden=false;
+ const draw=docs=>{list.innerHTML='';if(!docs.length){const p=document.createElement('p');p.textContent='Пока никто не сохранил результат. Он появится здесь, когда администратор пройдёт тест, будучи приглашённым на страницу.';list.appendChild(p);return;}
+  const w=document.createElement('div');w.className='tbl';const t=document.createElement('table');
+  t.innerHTML='<thead><tr><th>Администратор</th><th>Студия</th><th>Последний результат</th><th>Дата</th><th>Попыток</th></tr></thead>';
+  const tb=document.createElement('tbody');
+  docs.sort((a,b)=>(b.last&&b.last.at||'').localeCompare(a.last&&a.last.at||'')).forEach(d=>{const tr=document.createElement('tr');
+   const l=d.last||{};[d.name||'—',d.studio||'—',(l.score??'—')+' из '+(l.total??20)+(l.pass?' · сдан':' · не сдан'),l.at?new Date(l.at).toLocaleDateString('ru-RU'):'—',(d.attempts||[]).length].forEach((v,k)=>{const td=document.createElement('td');td.textContent=v;td.setAttribute('data-label',['Администратор','Студия','Последний результат','Дата','Попыток'][k]);if(k>1)td.className='num';tr.appendChild(td)});tb.appendChild(tr)});
+  t.appendChild(tb);w.appendChild(t);list.appendChild(w);};
+ try{db.collection('results').onSnapshot(s=>{draw(s.docs.map(d=>d.data()))},()=>{});}catch(e){try{const s=await db.collection('results').get();draw(s.docs.map(d=>d.data()))}catch(_){}}
+}
+})();
+</script>
+</body></html>
