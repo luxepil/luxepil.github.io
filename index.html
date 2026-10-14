@@ -107,6 +107,15 @@ input,select{font:inherit;padding:10px 12px;border-radius:9px;border:1px solid v
 .welcome-go{margin-top:22px}
 .welcome-go button{font-size:16px;padding:12px 22px}
 button.about{padding:8px 14px;font-size:14px;align-self:center}
+body.testing nav.toc,body.testing #pager,body.testing #aboutBtn{display:none!important}
+body.testing .layout{grid-template-columns:minmax(0,1fr)}
+body.testing section.page:not([data-id="test"]) > :not(.mini){display:none!important}
+body.testing #adminBox{display:none!important}
+body.testing .mini{margin-top:0}
+.timer{position:sticky;top:env(safe-area-inset-top,0px);z-index:4;display:flex;justify-content:space-between;gap:10px;background:var(--accent);color:var(--surface);font-weight:600;padding:10px 14px;border-radius:9px;margin:6px 0 12px;font-variant-numeric:tabular-nums}
+.timer.low{background:var(--bad)}
+.testintro{margin:6px 0 12px}
+.testintro button{margin-top:10px}
 nav.toc a.locked{color:var(--muted);cursor:not-allowed}
 nav.toc a.locked:hover{background:transparent}
 .mini{margin-top:34px;padding:20px clamp(14px,2.5vw,24px);border-radius:12px;background:var(--bg);border:1px solid var(--line)}
@@ -196,7 +205,7 @@ input,select{font-size:16px}
 <div class="welcome">
 <p class="hello">Добро пожаловать в команду Luxepil!</p>
 <p>Мы рады, что вы с нами. Этот мини-курс собрал всё, что нужно администратору для уверенной работы: как устроена наша сеть, как проходит смена, как встречать Клиента, вести запись, отвечать на возражения и что делать в непростых ситуациях. Курс пригодится и сейчас, на старте, и потом — возвращайтесь к нему, когда нужно что-то уточнить.</p>
-<p><b>Как проходит обучение.</b> Курс состоит из 8 этапов. В конце каждого — мини-тест из 10 вопросов: ответьте верно на 8, и откроется следующий этап. После всех этапов откроется итоговый тест из 20 вопросов. Его результат вы отправите управляющей Наталии Владимировне — по нему решается, прошли ли вы обучение.</p>
+<p><b>Как проходит обучение.</b> Курс состоит из 8 этапов. В конце каждого — мини-тест из 10 вопросов на 5 минут: ответьте верно на 8, и откроется следующий этап. Во время любого теста текст курса скрыт, поэтому сначала внимательно изучите этап. После всех этапов откроется итоговый тест из 30 вопросов. Его результат вы отправите управляющей Наталии Владимировне — по нему решается, прошли ли вы обучение.</p>
 <p>Если ошибётесь, не страшно: система покажет правильный ответ, а тест можно пройти снова. Желаем успехов!</p>
 <div class="welcome-go"><button type="button" class="primary" id="startBtn">Начать обучение →</button></div>
 </div>
@@ -548,13 +557,17 @@ input,select{font-size:16px}
 <h2>Итоговый тест</h2>
 <div id="testLock" class="lockpage"><b>Итоговый тест пока закрыт</b>Он откроется, когда вы пройдёте мини-тесты всех 8 этапов.</div>
 <div id="testBody" hidden>
-<p class="lead">20 вопросов по всем разделам. Чтобы сдать, нужно 16 правильных ответов. По его итогам решается, прошли вы обучение или нет.</p>
+<p class="lead">30 вопросов по всем разделам. Чтобы сдать, нужно 24 правильных ответа. По его итогам решается, прошли вы обучение или нет. Когда вы нажмёте «Начать итоговый тест», разделы курса будут недоступны до конца теста.</p>
 <div class="form">
 <label class="f" for="tName">Имя и фамилия<input id="tName" autocomplete="name" placeholder="Например, Алина Сафина"></label>
 <label class="f" for="tStudio">Студия<select id="tStudio"><option value="">Выберите студию</option><option>Тукая 55</option><option>Хади Такташа 2</option><option>Бондаренко 17</option><option>Чуйкова 66</option><option>Козина 3А</option><option>Краснококшайская 84Б к2</option></select></label>
 </div>
+<div id="finalIntro" class="testintro"><p class="msg" id="startHint" style="color:var(--bad);margin:0 0 6px"></p><button type="button" class="primary" id="finalStart">Начать итоговый тест</button></div>
+<div id="finalBody" hidden>
+<div class="timer" id="finalBar"><span>Итоговый тест</span><span>Разделы курса недоступны до конца теста</span></div>
 <form id="quiz"></form>
 <div class="foot" style="margin-top:12px"><span id="qHint" class="lead" style="margin:0">Ответьте на все вопросы</span><button class="primary" id="checkBtn" type="button">Проверить</button></div>
+</div>
 <div id="result" hidden></div>
 </div>
 <div id="adminBox" class="adminbox" hidden>
@@ -665,6 +678,17 @@ const QS=[
 ["С какого возраста делаем маникюр с покрытием?",["С 10 лет","С 14 лет","С 16 лет","С 18 лет"],2,"Детский маникюр — с 10 до 16 лет, с 16 — обычный, в том числе с покрытием."],
 ["Когда ребёнок может прийти на процедуру без родителя?",["Всегда","С 14 лет","Со второго визита, если родитель подписал согласие","Никогда"],2,"Первый визит — только с родителем. Дальше — только при подписанном согласии и пометке в YCLIENTS."],
 ["Что сказать Клиенту при записи на лазерную эпиляцию?",["Отрастить волосы 4–5 мм","Побрить зону за 1–2 дня и не загорать за 2 недели","Сделать шугаринг за неделю","Ничего не нужно"],1,"Перед лазером: побрить за 1–2 дня, без воска и шугаринга 3–4 недели, не загорать 2 недели. Длина 4–5 мм нужна для шугаринга."]
+,
+["Какой график работы у администратора?",["5/2 с 9:00 до 18:00","2/2 с 8:30 до 21:00","3/3 с 10:00 до 22:00","Свободный"],1,"График 2/2, смена с 8:30 до 21:00."],
+["Выручка за смену — 18 000 ₽. Что получает администратор?",["2 000 ₽ + 4%","2 000 ₽ за выход, проценты не начисляются","2 000 ₽ + 5%","1 500 ₽"],1,"Если выручка смены меньше 20 000 ₽, проценты не начисляются — только 2 000 ₽ за выход."],
+["Кому предлагаем горящие окна и с какой скидкой?",["Новым подписчикам, −10%","Клиентам, которые были 3–4 недели назад, −300 ₽","Всем подряд, −500 ₽","Только постоянным, −20%"],1,"Горящие окна — Клиентам, которые были 3–4 недели назад, со скидкой 300 ₽ на визит сегодня."],
+["Можно ли снять лицо Клиента для истории?",["Да, всегда","Только с его согласия","Только в маске","Нет, даже руки нельзя"],1,"Снимаем руки, процесс и результат. Лицо — только с согласия Клиента."],
+["Кто публикует контент в Instagram, ВКонтакте и TikTok?",["Администратор","Мастер","SMM-специалист — админ только снимает и отправляет ему","Управляющая"],2,"Админ снимает посты, рилсы и видеоотзывы и отправляет SMM-специалисту, тот публикует."],
+["Когда составляем основной заказ расходников?",["Каждый понедельник","С 5 по 10 и с 20 по 25 число","В последний день месяца","Когда что-то закончилось"],1,"Основной заказ — дважды в месяц. Дозаказ того, что не хватило, — по понедельникам и четвергам."],
+["Клиент опоздал на 10 минут. Что делаем?",["Принимаем","Переносим на другой день","Предлагаем только короткую процедуру","Берём доплату"],0,"Опоздание до 15 минут — принимаем как обычно."],
+["Кому положена скидка 20% на эпиляцию?",["Всем в выходные","Новым Клиентам при записи на маникюр","Постоянным Клиентам","Тем, кто оставил отзыв"],1,"Скидка 20% на эпиляцию любой зоны — новым Клиентам при записи на маникюр."],
+["Какой кэшбэк при оплате наличными и картой?",["5% наличными, 1% картой","1% наличными, 5% картой","3% в любом случае","Кэшбэка нет"],0,"Кэшбэк: 5% при оплате наличными, 1% — картой."],
+["Как по корпоративному правилу пишем слово «Клиент»?",["Со строчной буквы","С заглавной буквы во всех формах","Только в начале предложения с заглавной","Как удобно"],1,"Корпоративное правило: в любом письменном тексте «Клиент» — с заглавной буквы."]
 ];
 const quiz=document.getElementById('quiz');
 QS.forEach((q,i)=>{const fs=document.createElement('fieldset');fs.className='q';fs.id='q'+i;
@@ -764,26 +788,47 @@ const idx=id=>pages.findIndex(p=>p.dataset.id===id);
 const unlocked=i=>i===0||learn.slice(0,i).every(p=>passed[p.dataset.id]);
 function savePassed(){try{localStorage.setItem('lx_passed',JSON.stringify(passed))}catch(e){}saveStages();}
 
+const MINI_TIME=300;
+let active=null,tick=null;
+function setActive(v){active=v;try{v?localStorage.setItem('lx_active',JSON.stringify(v)):localStorage.removeItem('lx_active')}catch(e){}}
+function enterTest(){document.body.classList.add('testing');window.scrollTo({top:0})}
+function exitTest(){document.body.classList.remove('testing');clearInterval(tick);setActive(null)}
+function runTimer(el,end,onEnd){const upd=()=>{const left=Math.max(0,Math.ceil((end-Date.now())/1000));el.querySelector('b').textContent=Math.floor(left/60)+':'+String(left%60).padStart(2,'0');el.classList.toggle('low',left<=60);if(left<=0){clearInterval(tick);onEnd()}};clearInterval(tick);upd();tick=setInterval(upd,500)}
+window.addEventListener('beforeunload',e=>{if(active){e.preventDefault();e.returnValue=''}});
 learn.forEach(p=>{const id=p.dataset.id,qs=MINI[id];const box=document.createElement('div');box.className='mini';box.id='mini_'+id;
- const h=document.createElement('h3');h.textContent='Мини-тест по этапу';const sub=document.createElement('p');sub.className='sub';sub.textContent='10 вопросов. Чтобы открыть следующий этап, нужно '+MINI_PASS+' правильных ответов.';
- box.append(h,sub);
+ const h=document.createElement('h3');h.textContent='Мини-тест по этапу';
+ const intro=document.createElement('div');intro.className='testintro';
+ const sub=document.createElement('p');sub.className='sub';sub.textContent='10 вопросов, 5 минут. Чтобы открыть следующий этап, нужно '+MINI_PASS+' правильных ответов. Когда вы начнёте, текст этапа и меню будут скрыты до конца теста — вернуться к ним не получится.';
+ const sbtn=document.createElement('button');sbtn.type='button';sbtn.className='primary';sbtn.textContent='Начать мини-тест';
+ intro.append(sub,sbtn);box.append(h,intro);
+ const mq=document.createElement('div');mq.className='mq';mq.hidden=true;
+ const tm=document.createElement('div');tm.className='timer';tm.innerHTML='<span>Мини-тест: '+p.dataset.title+'</span><span>Осталось <b>5:00</b></span>';mq.appendChild(tm);
  qs.forEach((q,i)=>{const fs=document.createElement('fieldset');fs.className='q';const lg=document.createElement('legend');const n=document.createElement('span');n.className='qn';n.textContent=(i+1)+'.';lg.append(n,document.createTextNode(q[0]));fs.appendChild(lg);
-  shuf(q[1].map((_,k)=>k)).forEach(j=>{const o=q[1][j];const l=document.createElement('label');l.className='opt';const inp=document.createElement('input');inp.type='radio';inp.name='m_'+id+'_'+i;inp.value=j;inp.id='m_'+id+'_'+i+'_'+j;l.append(inp,document.createTextNode(o));fs.appendChild(l)});const ex=document.createElement('div');ex.className='expl';ex.hidden=true;fs.appendChild(ex);box.appendChild(fs)});
+  shuf(q[1].map((_,k)=>k)).forEach(j=>{const o=q[1][j];const l=document.createElement('label');l.className='opt';const inp=document.createElement('input');inp.type='radio';inp.name='m_'+id+'_'+i;inp.value=j;inp.id='m_'+id+'_'+i+'_'+j;l.append(inp,document.createTextNode(o));fs.appendChild(l)});const ex=document.createElement('div');ex.className='expl';ex.hidden=true;fs.appendChild(ex);mq.appendChild(fs)});
  const row=document.createElement('div');row.className='foot';row.style.marginTop='12px';row.style.borderTop='0';row.style.paddingTop='0';
  const msg=document.createElement('p');msg.className='msg';const btn=document.createElement('button');btn.type='button';btn.className='primary';btn.textContent='Проверить';
- row.append(msg,btn);box.appendChild(row);p.appendChild(box);
- btn.onclick=()=>{const ans=qs.map((_,i)=>{const c=box.querySelector('input[name=m_'+id+'_'+i+']:checked');return c?+c.value:null});
-  if(ans.some(a=>a===null)){msg.className='msg no';msg.textContent='Ответьте на все вопросы.';return;}
-  const fss=[...box.querySelectorAll('fieldset')];let ok=0;
-  qs.forEach((q,i)=>{const r=ans[i]===q[2];if(r)ok++;const f=fss[i];f.classList.toggle('right',r);f.classList.toggle('wrong',!r);markOpts(f,q[2],ans[i]);const ex=f.querySelector('.expl');ex.hidden=r;ex.innerHTML='';if(!r){ex.append('Ошибка. ');const b=document.createElement('b');b.textContent='Правильный ответ: «'+q[1][q[2]]+'»';ex.append(b,'. Он выделен зелёным.')}});
-  if(ok>=MINI_PASS){passed[id]=true;savePassed();markMini(id,true);if(ok<qs.length){const m=box.querySelector('.msg');m.textContent+=' Ошибок: '+(qs.length-ok)+' — посмотрите правильные ответы выше, они выделены зелёным.'}render();}
-  else{msg.className='msg no';msg.textContent='Верно '+ok+' из '+qs.length+', нужно '+MINI_PASS+'. Под каждой ошибкой указан правильный ответ. Изучите их, выберите ответы заново и нажмите «Проверить».';}
+ const retry=document.createElement('button');retry.type='button';retry.className='primary';retry.textContent='Пройти мини-тест заново';retry.hidden=true;
+ row.append(msg,btn,retry);mq.appendChild(row);box.appendChild(mq);p.appendChild(box);
+ const reset=()=>{mq.querySelectorAll('fieldset').forEach(f=>{f.classList.remove('right','wrong');clearOpts(f);f.querySelector('.expl').hidden=true;f.querySelectorAll('input').forEach(i=>{i.checked=false;i.disabled=false})});msg.textContent='';msg.className='msg';btn.hidden=false;retry.hidden=true;tm.hidden=false};
+ const start=(end)=>{reset();intro.hidden=true;mq.hidden=false;end=end||Date.now()+MINI_TIME*1000;setActive({kind:'mini',id,end});enterTest();runTimer(tm,end,()=>finish(true))};
+ const finish=(timeout)=>{const ans=qs.map((_,i)=>{const c=box.querySelector('input[name=m_'+id+'_'+i+']:checked');return c?+c.value:null});
+  if(!timeout&&ans.some(a=>a===null)){msg.className='msg no';msg.textContent='Ответьте на все вопросы. Время идёт.';return;}
+  const fss=[...mq.querySelectorAll('fieldset')];let ok=0;
+  qs.forEach((q,i)=>{const r=ans[i]===q[2];if(r)ok++;const f=fss[i];f.classList.toggle('right',r);f.classList.toggle('wrong',!r);markOpts(f,q[2],ans[i]);const ex=f.querySelector('.expl');ex.hidden=r;ex.innerHTML='';if(!r){ex.append(ans[i]===null?'Нет ответа. ':'Ошибка. ');const b=document.createElement('b');b.textContent='Правильный ответ: «'+q[1][q[2]]+'»';ex.append(b,'. Он выделен зелёным.')}});
+  mq.querySelectorAll('input').forEach(i=>i.disabled=true);btn.hidden=true;tm.hidden=true;exitTest();
+  const pre=timeout?'Время вышло. ':'';
+  if(ok>=MINI_PASS){passed[id]=true;savePassed();markMini(id,true);msg.textContent=pre+msg.textContent+(ok<qs.length?' Ошибок: '+(qs.length-ok)+' — правильные ответы выделены зелёным.':'');render();}
+  else{msg.className='msg no';msg.textContent=pre+'Верно '+ok+' из '+qs.length+', нужно '+MINI_PASS+'. Под каждой ошибкой указан правильный ответ. Перечитайте этап — текст снова открыт — и пройдите мини-тест заново.';retry.hidden=false;}
+  box.scrollIntoView({behavior:'smooth',block:'start'});
  };
+ sbtn.onclick=()=>start();btn.onclick=()=>finish(false);retry.onclick=()=>start();
+ box._start=start;
 });
 function markMini(id,keep){const box=document.getElementById('mini_'+id);if(!box)return;box.classList.add('passed');
+ box.querySelector('.testintro').hidden=true;const mq=box.querySelector('.mq');mq.hidden=false;mq.querySelector('.timer').hidden=true;
  box.querySelectorAll('input').forEach(i=>i.disabled=true);
  if(!keep)box.querySelectorAll('fieldset').forEach((f,i)=>{f.classList.remove('wrong');f.classList.add('right');const inp=f.querySelector('input[value="'+MINI[id][i][2]+'"]');if(inp)inp.checked=true});
- const btn=box.querySelector('button');btn.hidden=true;const msg=box.querySelector('.msg');msg.className='msg ok';
+ box.querySelectorAll('.mq .foot button').forEach(b=>b.hidden=true);const msg=box.querySelector('.msg');msg.className='msg ok';
  msg.textContent=idx(id)<learn.length-1?'Этап пройден. Следующий открыт.':'Все этапы пройдены. Итоговый тест открыт.';}
 
 pages.forEach((p,i)=>{const a=document.createElement('a');a.href='#'+p.dataset.id;a.dataset.id=p.dataset.id;
@@ -805,7 +850,7 @@ function render(){
  const can=!last&&unlocked(cur+1);nb.disabled=!can;
  hint.textContent=(!last&&!can)?'Пройдите мини-тест, чтобы открыть следующий этап':'';
 }
-function show(id,scroll){let i=idx(id);if(i<0||!unlocked(i))i=Math.max(0,learn.findIndex(p=>!passed[p.dataset.id]));if(learn.every(p=>passed[p.dataset.id])&&idx(id)<0)i=0;
+function show(id,scroll){if(active&&document.body.classList.contains('testing')&&pages[cur]&&pages[cur].dataset.id!==id)return;let i=idx(id);if(i<0||!unlocked(i))i=Math.max(0,learn.findIndex(p=>!passed[p.dataset.id]));if(learn.every(p=>passed[p.dataset.id])&&idx(id)<0)i=0;
  cur=i;pages.forEach((p,j)=>p.hidden=j!==i);
  try{history.replaceState(null,'','#'+pages[i].dataset.id)}catch(e){}
  render();if(scroll)window.scrollTo({top:0,behavior:'smooth'});}
@@ -821,6 +866,10 @@ document.getElementById('startBtn').onclick=()=>{try{localStorage.setItem('lx_we
 document.getElementById('aboutBtn').onclick=()=>showWelcome(true);
 let seen=false;try{seen=localStorage.getItem('lx_welcome')==='1'}catch(e){}
 showWelcome(!seen&&!Object.keys(passed).length);
+try{const a=JSON.parse(localStorage.getItem('lx_active')||'null');if(a){showWelcome(false);
+ if(a.kind==='mini'&&MINI[a.id]){if(a.end>Date.now()){show(a.id,false);document.getElementById('mini_'+a.id)._start(a.end)}else{show(a.id,false);document.getElementById('mini_'+a.id)._start(Date.now()+50)}}
+ else if(a.kind==='final'&&learn.every(p=>passed[p.dataset.id])){show('test',false);startFinal()}else setActive(null)}}catch(e){}
+
 
 
 /* storage for signed-in viewers */
@@ -837,6 +886,10 @@ async function saveStages(){if(!db||!myId)return;try{const ref=db.doc('results/'
 
 const nameEl=document.getElementById('tName'),stEl=document.getElementById('tStudio');
 try{nameEl.value=localStorage.getItem('lx_name')||'';stEl.value=localStorage.getItem('lx_studio')||''}catch(e){}
+
+document.getElementById('finalStart').onclick=()=>{const sh=document.getElementById('startHint');if(!nameEl.value.trim()||!stEl.value){sh.textContent='Сначала укажите имя и студию';nameEl.focus();return;}
+ sh.textContent='';startFinal();};
+function startFinal(){document.getElementById('finalIntro').hidden=true;document.getElementById('finalBody').hidden=false;nameEl.disabled=true;stEl.disabled=true;setActive({kind:'final'});enterTest();}
 document.getElementById('checkBtn').onclick=async()=>{
  const hint=document.getElementById('qHint');
  const name=nameEl.value.trim(),studio=stEl.value;
@@ -845,16 +898,17 @@ document.getElementById('checkBtn').onclick=async()=>{
  const miss=ans.findIndex(a=>a===null);
  if(miss>=0){hint.textContent='Не отвечен вопрос '+(miss+1);hint.style.color='var(--bad)';document.getElementById('q'+miss).scrollIntoView({behavior:'smooth',block:'center'});return;}
  hint.textContent='';try{localStorage.setItem('lx_name',name);localStorage.setItem('lx_studio',studio)}catch(e){}
+ exitTest();document.getElementById('checkBtn').hidden=true;quiz.querySelectorAll('input').forEach(i=>i.disabled=true);document.getElementById('finalBar').hidden=true;
  let score=0;const wrong=[];
  QS.forEach((q,i)=>{const fs=document.getElementById('q'+i),ok=ans[i]===q[2];if(ok)score++;else wrong.push(i+1);
   fs.classList.toggle('right',ok);fs.classList.toggle('wrong',!ok);markOpts(fs,q[2],ans[i]);const ex=fs.querySelector('.expl');ex.hidden=false;
   ex.innerHTML='';if(ok){ex.append('Верно. '+q[3])}else{ex.append('Ошибка. ');const b=document.createElement('b');b.textContent='Правильный ответ: «'+q[1][q[2]]+'»';ex.append(b,'. '+q[3])}});
- const pass=score>=16,now=new Date();
+ const pass=score>=24,now=new Date();
  const r=document.getElementById('result');r.hidden=false;r.className='result '+(pass?'pass':'fail');
  const stamp=now.toLocaleString('ru-RU',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
  r.innerHTML='';
  const h=document.createElement('div');h.className='score';h.textContent=score+' из '+QS.length;
- const p1=document.createElement('p');p1.innerHTML='<b>'+(pass?'Тест сдан.':'Тест не сдан.')+'</b> '+(pass?'Отличная работа!':'Нужно 16 правильных. Перечитайте разделы и пройдите тест ещё раз.');
+ const p1=document.createElement('p');p1.innerHTML='<b>'+(pass?'Тест сдан.':'Тест не сдан.')+'</b> '+(pass?'Отличная работа!':'Нужно 24 правильных. Перечитайте разделы и пройдите тест ещё раз.');
  const p2=document.createElement('p');p2.textContent=name+' · '+studio+' · '+stamp+(wrong.length?' · ошибки в вопросах: '+wrong.join(', '):'');
  const WA='79656060867';
  const subj='Итоговый тест Luxepil: '+name+', '+studio+' — '+score+' из '+QS.length+(pass?' (сдан)':' (не сдан)');
@@ -868,7 +922,7 @@ document.getElementById('checkBtn').onclick=async()=>{
  copy.onclick=()=>{const t=subj+'\n\n'+bodyTxt;const done=()=>{copy.textContent='Скопировано'};
   try{navigator.clipboard.writeText(t).then(done,()=>{pre.hidden=false;const rg=document.createRange();rg.selectNodeContents(pre);const sel=getSelection();sel.removeAllRanges();sel.addRange(rg);copy.textContent='Выделено — скопируйте вручную'})}catch(e){pre.hidden=false}};
  const again=document.createElement('button');again.type='button';again.textContent='Пройти заново';
- again.onclick=()=>{quiz.reset();quiz.querySelectorAll('.q').forEach(f=>{f.classList.remove('right','wrong');clearOpts(f);f.querySelector('.expl').hidden=true});r.hidden=true;quiz.scrollIntoView({behavior:'smooth'})};
+ again.onclick=()=>{quiz.reset();quiz.querySelectorAll('input').forEach(i=>i.disabled=false);quiz.querySelectorAll('.q').forEach(f=>{f.classList.remove('right','wrong');clearOpts(f);f.querySelector('.expl').hidden=true});r.hidden=true;document.getElementById('checkBtn').hidden=false;document.getElementById('finalBar').hidden=false;document.getElementById('finalBody').hidden=true;document.getElementById('finalIntro').hidden=false;nameEl.disabled=false;stEl.disabled=false;window.scrollTo({top:0})};
  acts.append(mail,copy,again);
  r.append(h,p1,p2,p3,acts,pre);r.scrollIntoView({behavior:'smooth',block:'center'});
  if(db&&myId){try{const ref=db.doc('results/'+myId);let prev=[];try{const s=await ref.get();if(s&&s.exists){const d=s.data();prev=(d&&d.attempts)||[]}}catch(e){}
