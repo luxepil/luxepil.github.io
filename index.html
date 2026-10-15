@@ -104,6 +104,11 @@ input,select{font:inherit;padding:10px 12px;border-radius:9px;border:1px solid v
 .welcome-screen{display:flex;justify-content:center;padding-block:clamp(12px,4vh,48px)}
 .welcome-screen .welcome{max-width:720px;margin:0;padding:clamp(24px,4vw,44px);border:1px solid var(--line);font-size:16.5px}
 .welcome-screen .hello{font-size:clamp(22px,3vw,30px)}
+.wform{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.wform-t{grid-column:1/-1;margin:0;font-weight:600}
+.werr{grid-column:1/-1;margin:0;color:var(--bad);font-weight:600;min-height:0}
+.whoami{margin:6px 0 0;font-size:14px;color:var(--muted)}
+.whoami b{color:var(--ink)}
 .welcome-go{margin-top:22px}
 .welcome-go button{font-size:16px;padding:12px 22px}
 button.about{padding:8px 14px;font-size:14px;align-self:center}
@@ -196,7 +201,7 @@ input,select{font-size:16px}
 
 <div class="wrap">
 <header class="top">
-  <h1 class="brand"><small>Luxepil · студии эпиляции и маникюра · Казань</small>Школа администратора</h1>
+  <div><h1 class="brand"><small>Luxepil · студии эпиляции и маникюра · Казань</small>Школа администратора</h1><p class="whoami" id="whoami" hidden></p></div>
   <button type="button" id="aboutBtn" class="about">О курсе</button>
   <div class="progress" aria-live="polite"><div class="lbl"><span>Пройдено этапов</span><span id="progLbl">0 из 8</span></div><div class="bar"><i id="progBar"></i></div></div>
 </header>
@@ -207,6 +212,13 @@ input,select{font-size:16px}
 <p>Мы рады, что вы с нами. Этот мини-курс собрал всё, что нужно администратору для уверенной работы: как устроена наша сеть, как проходит смена, как встречать Клиента, вести запись, отвечать на возражения и что делать в непростых ситуациях. Курс пригодится и сейчас, на старте, и потом — возвращайтесь к нему, когда нужно что-то уточнить.</p>
 <p><b>Как проходит обучение.</b> Курс состоит из 8 этапов. В конце каждого — мини-тест из 10 вопросов на 5 минут: ответьте верно на 8, и откроется следующий этап. Во время любого теста текст курса скрыт, поэтому сначала внимательно изучите этап. После всех этапов откроется итоговый тест из 30 вопросов. Его результат вы отправите управляющей Наталии Владимировне — по нему решается, прошли ли вы обучение.</p>
 <p>Если ошибётесь, не страшно: система покажет правильный ответ, а тест можно пройти снова. Желаем успехов!</p>
+<p>Перед началом укажите своё имя и студию. Они попадут в результат итогового теста, который увидит управляющая.</p>
+<div class="wform">
+<p class="wform-t">Представьтесь, пожалуйста</p>
+<label class="f" for="wName">Имя и фамилия<input id="wName" autocomplete="name" placeholder="Например, Алина Сафина"></label>
+<label class="f" for="wStudio">Ваша студия<select id="wStudio"><option value="">Выберите студию</option><option>Тукая 55</option><option>Хади Такташа 2</option><option>Бондаренко 17</option><option>Чуйкова 66</option><option>Козина 3А</option><option>Краснококшайская 84Б к2</option></select></label>
+<p class="werr" id="wErr"></p>
+</div>
 <div class="welcome-go"><button type="button" class="primary" id="startBtn">Начать обучение →</button></div>
 </div>
 </div>
@@ -558,7 +570,8 @@ input,select{font-size:16px}
 <div id="testLock" class="lockpage"><b>Итоговый тест пока закрыт</b>Он откроется, когда вы пройдёте мини-тесты всех 8 этапов.</div>
 <div id="testBody" hidden>
 <p class="lead">30 вопросов по всем разделам. Чтобы сдать, нужно 24 правильных ответа. По его итогам решается, прошли вы обучение или нет. Когда вы нажмёте «Начать итоговый тест», разделы курса будут недоступны до конца теста.</p>
-<div class="form">
+<p class="lead" id="finalWho"></p>
+<div class="form" id="finalForm" hidden>
 <label class="f" for="tName">Имя и фамилия<input id="tName" autocomplete="name" placeholder="Например, Алина Сафина"></label>
 <label class="f" for="tStudio">Студия<select id="tStudio"><option value="">Выберите студию</option><option>Тукая 55</option><option>Хади Такташа 2</option><option>Бондаренко 17</option><option>Чуйкова 66</option><option>Козина 3А</option><option>Краснококшайская 84Б к2</option></select></label>
 </div>
@@ -862,10 +875,21 @@ show((location.hash||'').slice(1)||'set',false);
 document.querySelectorAll('.tbl table').forEach(t=>{const hs=[...t.querySelectorAll('thead th')].map(th=>th.textContent.trim());t.querySelectorAll('tbody tr').forEach(tr=>[...tr.children].forEach((td,i)=>{if(hs[i])td.setAttribute('data-label',hs[i])}))});
 const wsc=document.getElementById('welcomeScreen'),lay=document.getElementById('layout');
 function showWelcome(on){wsc.hidden=!on;lay.hidden=on;document.getElementById('aboutBtn').hidden=on;if(on)window.scrollTo({top:0})}
-document.getElementById('startBtn').onclick=()=>{try{localStorage.setItem('lx_welcome','1')}catch(e){}showWelcome(false);window.scrollTo({top:0,behavior:'smooth'})};
-document.getElementById('aboutBtn').onclick=()=>showWelcome(true);
-let seen=false;try{seen=localStorage.getItem('lx_welcome')==='1'}catch(e){}
-showWelcome(!seen&&!Object.keys(passed).length);
+const wN=document.getElementById('wName'),wS=document.getElementById('wStudio'),wE=document.getElementById('wErr');
+wN.addEventListener('input',()=>{wE.textContent=''});wS.addEventListener('change',()=>{wE.textContent=''});
+function getWho(){let n='',st='';try{n=localStorage.getItem('lx_name')||'';st=localStorage.getItem('lx_studio')||''}catch(e){}return{n,st}}
+function paintWho(){const {n,st}=getWho();const el=document.getElementById('whoami');if(n&&st){el.hidden=false;el.innerHTML='';el.append('Обучение: ');const b=document.createElement('b');b.textContent=n;el.append(b,' · '+st)}else el.hidden=true;
+ const fw=document.getElementById('finalWho');if(fw){fw.textContent=n&&st?'Тест проходит: '+n+', студия '+st+'.':''}
+ const tn=document.getElementById('tName'),ts=document.getElementById('tStudio');if(tn&&n){tn.value=n}if(ts&&st){ts.value=st}}
+document.getElementById('startBtn').onclick=()=>{const n=wN.value.trim(),st=wS.value;
+ if(n.split(/\s+/).filter(Boolean).length<2){wE.textContent='Укажите имя и фамилию';wN.focus();return}
+ if(!st){wE.textContent='Выберите вашу студию из списка';wS.focus();return}
+ wE.textContent='';try{localStorage.setItem('lx_name',n);localStorage.setItem('lx_studio',st);localStorage.setItem('lx_welcome','1')}catch(e){}
+ paintWho();try{saveStages()}catch(e){}showWelcome(false);window.scrollTo({top:0,behavior:'smooth'})};
+document.getElementById('aboutBtn').onclick=()=>{const {n,st}=getWho();wN.value=n;wS.value=st;document.getElementById('startBtn').textContent='Продолжить обучение →';showWelcome(true)};
+let seen=false;try{seen=localStorage.getItem('lx_welcome')==='1'&&!!localStorage.getItem('lx_name')&&!!localStorage.getItem('lx_studio')}catch(e){}
+{const {n,st}=getWho();wN.value=n;wS.value=st;if(n&&st)document.getElementById('startBtn').textContent='Продолжить обучение →'}
+showWelcome(!seen);
 try{const a=JSON.parse(localStorage.getItem('lx_active')||'null');if(a){showWelcome(false);
  if(a.kind==='mini'&&MINI[a.id]){if(a.end>Date.now()){show(a.id,false);document.getElementById('mini_'+a.id)._start(a.end)}else{show(a.id,false);document.getElementById('mini_'+a.id)._start(Date.now()+50)}}
  else if(a.kind==='final'&&learn.every(p=>passed[p.dataset.id])){show('test',false);startFinal()}else setActive(null)}}catch(e){}
@@ -886,8 +910,9 @@ async function saveStages(){if(!db||!myId)return;try{const ref=db.doc('results/'
 
 const nameEl=document.getElementById('tName'),stEl=document.getElementById('tStudio');
 try{nameEl.value=localStorage.getItem('lx_name')||'';stEl.value=localStorage.getItem('lx_studio')||''}catch(e){}
+paintWho();
 
-document.getElementById('finalStart').onclick=()=>{const sh=document.getElementById('startHint');if(!nameEl.value.trim()||!stEl.value){sh.textContent='Сначала укажите имя и студию';nameEl.focus();return;}
+document.getElementById('finalStart').onclick=()=>{const sh=document.getElementById('startHint');if(!nameEl.value.trim()||!stEl.value){sh.textContent='Сначала представьтесь: нажмите «О курсе» вверху и укажите имя и студию';return;}
  sh.textContent='';startFinal();};
 function startFinal(){quiz.querySelectorAll('fieldset').forEach(f=>{const ex=f.querySelector('.expl');shuf([...f.querySelectorAll('.opt')]).forEach(l=>f.insertBefore(l,ex))});document.getElementById('finalIntro').hidden=true;document.getElementById('finalBody').hidden=false;nameEl.disabled=true;stEl.disabled=true;setActive({kind:'final'});enterTest();}
 document.getElementById('checkBtn').onclick=async()=>{
@@ -912,7 +937,7 @@ document.getElementById('checkBtn').onclick=async()=>{
  const p2=document.createElement('p');p2.textContent=name+' · '+studio+' · '+stamp+(wrong.length?' · ошибки в вопросах: '+wrong.join(', '):'');
  const WA='79656060867';
  const subj='Итоговый тест Luxepil: '+name+', '+studio+' — '+score+' из '+QS.length+(pass?' (сдан)':' (не сдан)');
- const bodyTxt='Администратор: '+name+'\nСтудия: '+studio+'\nДата: '+stamp+'\nРезультат: '+score+' из '+QS.length+(pass?' — тест сдан':' — тест не сдан')+'\nОшибки в вопросах: '+(wrong.length?wrong.join(', '):'нет')+'\nЭтапы обучения: пройдены все 8';
+ const bodyTxt='Администратор: '+name+'\nСтудия: '+studio+'\nДата: '+stamp+'\nРезультат: '+score+' из '+QS.length+(pass?' — тест сдан':' — тест не сдан')+'\nЭтапы обучения: пройдены все 8'+(wrong.length?'\n\nОшибки ('+wrong.length+'):\n'+wrong.map(k=>{const q=QS[k-1];return k+'. '+q[0]+'\n   Ответ: '+q[1][ans[k-1]]+'\n   Верно: '+q[1][q[2]]}).join('\n'):'\nОшибок нет');
  const p3=document.createElement('p');p3.id='saveNote';p3.innerHTML='<b>Отправьте результат управляющей Наталии Владимировне</b> в WhatsApp. Нажмите «Отправить в WhatsApp» — откроется чат с готовым сообщением, останется нажать «Отправить». Если WhatsApp не открылся, нажмите «Скопировать результат» и отправьте текст Наталии Владимировне в WhatsApp сами.';
  const acts=document.createElement('div');acts.style.cssText='display:flex;flex-wrap:wrap;gap:10px;margin-top:10px';
  const mail=document.createElement('a');mail.href='https://wa.me/'+WA+'?text='+encodeURIComponent(subj+'\n\n'+bodyTxt);mail.target='_blank';mail.rel='noopener';
